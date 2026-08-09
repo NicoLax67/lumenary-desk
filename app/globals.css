@@ -1,0 +1,529 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #111716;
+  --paper: #f6f1e8;
+  --panel: #1c2422;
+  --panel-2: #26312e;
+  --line: rgba(246, 241, 232, 0.16);
+  --muted: #6f7b73;
+  --fern: #7ecb74;
+  --amber: #e6aa4b;
+  --coral: #e86f5f;
+  --mist: #e9ebe2;
+}
+
+@theme inline {
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.hero {
+  min-height: 100vh;
+  padding: 20px clamp(16px, 3vw, 44px) 56px;
+  background:
+    radial-gradient(circle at 82% 16%, rgba(230, 170, 75, 0.2), transparent 28%),
+    linear-gradient(145deg, #f6f1e8 0%, #dfe6d5 48%, #202927 48.2%, #101514 100%);
+}
+
+.nav {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin: 0 auto 44px;
+  max-width: 1220px;
+}
+
+.brand,
+.navLinks,
+.proof,
+.heroActions {
+  align-items: center;
+  display: flex;
+}
+
+.brand {
+  font-weight: 760;
+  gap: 10px;
+}
+
+.brandMark,
+.railLogo {
+  background: var(--ink);
+  border-radius: 7px;
+  color: var(--paper);
+  display: grid;
+  font-weight: 800;
+  height: 34px;
+  place-items: center;
+  width: 34px;
+}
+
+.navLinks {
+  color: #46514c;
+  gap: 24px;
+  font-size: 0.95rem;
+}
+
+.navCta,
+.primaryBtn,
+.secondaryBtn,
+.panelHeader button,
+.focusPanel button,
+.plan button {
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 720;
+}
+
+.navCta,
+.primaryBtn,
+.plan button {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.navCta {
+  padding: 10px 16px;
+}
+
+.heroGrid {
+  align-items: center;
+  display: grid;
+  gap: clamp(28px, 5vw, 64px);
+  grid-template-columns: minmax(280px, 0.78fr) minmax(520px, 1.22fr);
+  margin: 0 auto;
+  max-width: 1220px;
+}
+
+.eyebrow {
+  color: #54705f;
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(4rem, 12vw, 8.8rem);
+  letter-spacing: 0;
+  line-height: 0.84;
+  margin-bottom: 28px;
+  max-width: 740px;
+}
+
+h2 {
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  letter-spacing: 0;
+  line-height: 0.95;
+  margin-bottom: 0;
+}
+
+.lede {
+  color: #3e4b45;
+  font-size: clamp(1.1rem, 2vw, 1.38rem);
+  line-height: 1.55;
+  max-width: 620px;
+}
+
+.heroActions {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  padding: 13px 18px;
+}
+
+.secondaryBtn {
+  background: rgba(255, 255, 255, 0.36);
+  border-color: rgba(17, 23, 22, 0.2);
+}
+
+.proof {
+  color: #4b5a53;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.proof span {
+  border: 1px solid rgba(17, 23, 22, 0.15);
+  border-radius: 999px;
+  padding: 7px 10px;
+}
+
+.desktop {
+  background: linear-gradient(150deg, #151b1a, #26302d);
+  border: 1px solid rgba(246, 241, 232, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
+  color: var(--mist);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 72px 1.1fr 0.95fr;
+  grid-template-rows: 1fr auto;
+  min-height: 600px;
+  padding: 14px;
+}
+
+.rail {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  grid-row: 1 / 3;
+  padding: 14px 10px;
+}
+
+.rail button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #cbd5ca;
+  cursor: pointer;
+  height: 38px;
+  width: 44px;
+}
+
+.rail button:first-of-type,
+.panelHeader button,
+.focusPanel button {
+  background: rgba(126, 203, 116, 0.22);
+  border-color: rgba(126, 203, 116, 0.38);
+  color: #dff8d8;
+}
+
+.mailPanel,
+.dayPanel,
+.focusPanel,
+.appCard,
+.plan {
+  border-radius: 8px;
+}
+
+.mailPanel,
+.dayPanel,
+.focusPanel {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--line);
+  padding: 18px;
+}
+
+.panelHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.panelHeader span,
+.panelHeader strong {
+  font-size: 1.02rem;
+  font-weight: 760;
+}
+
+.panelHeader button,
+.focusPanel button {
+  padding: 8px 12px;
+}
+
+.message {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+
+.message small,
+.message span,
+.vaultCard p,
+.focusPanel p,
+.appCard p,
+.plan p {
+  color: #aeb8b1;
+}
+
+.message strong,
+.message small,
+.message span,
+.message em {
+  display: block;
+}
+
+.message em {
+  color: var(--fern);
+  font-size: 0.75rem;
+  font-style: normal;
+  margin-top: 5px;
+}
+
+.calendarStrip {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  margin-bottom: 16px;
+}
+
+.calendarStrip span {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.calendarStrip .activeDay {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: white;
+}
+
+.vaultCard {
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  padding: 18px;
+}
+
+.lock {
+  color: var(--amber);
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 780;
+  margin-bottom: 10px;
+}
+
+.fileRows {
+  display: grid;
+  gap: 8px;
+}
+
+.fileRows span {
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 7px;
+  padding: 10px;
+}
+
+.focusPanel {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  grid-column: 2 / 4;
+  justify-content: center;
+  text-align: center;
+}
+
+.ring {
+  align-items: center;
+  aspect-ratio: 1;
+  border: 10px solid rgba(126, 203, 116, 0.28);
+  border-right-color: var(--fern);
+  border-radius: 50%;
+  display: flex;
+  font-size: 2.6rem;
+  justify-content: center;
+  margin-bottom: 14px;
+  width: min(160px, 35vw);
+}
+
+.suite,
+.pricing {
+  padding: 82px clamp(16px, 5vw, 72px);
+}
+
+.sectionIntro {
+  margin: 0 auto 34px;
+  max-width: 1120px;
+}
+
+.appGrid,
+.planGrid {
+  display: grid;
+  gap: 14px;
+  margin: 0 auto;
+  max-width: 1120px;
+}
+
+.appGrid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.appCard,
+.plan {
+  background: #fffaf0;
+  border: 1px solid rgba(17, 23, 22, 0.12);
+  padding: 22px;
+}
+
+.appCard span {
+  color: var(--coral);
+  font-size: 0.78rem;
+  font-weight: 780;
+}
+
+.appCard h3,
+.plan h3 {
+  font-size: 1.35rem;
+  margin: 16px 0 10px;
+}
+
+.appCard p,
+.plan p {
+  color: #506057;
+  line-height: 1.5;
+}
+
+.security {
+  align-items: start;
+  background: var(--ink);
+  color: var(--paper);
+  display: grid;
+  gap: 34px;
+  grid-template-columns: 0.9fr 1.1fr;
+  padding: 76px clamp(16px, 5vw, 72px);
+}
+
+.security > * {
+  margin: 0 auto;
+  max-width: 560px;
+}
+
+.security p:last-child {
+  color: #cfd8cf;
+  font-size: 1.12rem;
+  line-height: 1.7;
+}
+
+.planGrid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.plan strong {
+  display: block;
+  font-size: 2.8rem;
+  margin: 26px 0;
+}
+
+.plan small {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.plan button {
+  padding: 12px 16px;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    background: linear-gradient(180deg, #f6f1e8 0%, #dfe6d5 42%, #202927 42.2%, #101514 100%);
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .heroGrid,
+  .security {
+    grid-template-columns: 1fr;
+  }
+
+  .desktop {
+    grid-template-columns: 58px 1fr;
+  }
+
+  .dayPanel,
+  .focusPanel {
+    grid-column: 2;
+  }
+
+  .appGrid,
+  .planGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 14px;
+  }
+
+  .brand span:last-child {
+    display: none;
+  }
+
+  h1 {
+    font-size: clamp(3.8rem, 23vw, 6.1rem);
+  }
+
+  .desktop {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .rail {
+    flex-direction: row;
+    grid-row: auto;
+    overflow-x: auto;
+  }
+
+  .mailPanel,
+  .dayPanel,
+  .focusPanel {
+    grid-column: auto;
+  }
+
+  .message {
+    align-items: flex-start;
+  }
+
+  .appGrid,
+  .planGrid {
+    grid-template-columns: 1fr;
+  }
+}
