@@ -41,8 +41,9 @@ test("server-renders the required email login gate", async () => {
 });
 
 test("keeps checkout, desktop app, and email positioning wired", async () => {
-  const [page, layout, packageJson, css, desktopMain, desktopHtml, desktopPreload, installer, installButton, startCmd, startPs1, protonReadme] = await Promise.all([
+  const [page, downloadPage, layout, packageJson, css, desktopMain, desktopHtml, desktopPreload, installer, installButton, publicInstallButton, publicStartButton, startCmd, startPs1, protonReadme] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/download/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
@@ -51,12 +52,18 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
     readFile(new URL("../desktop/preload.cjs", import.meta.url), "utf8"),
     readFile(new URL("../desktop/install-windows.ps1", import.meta.url), "utf8"),
     readFile(new URL("../install button.ps1", import.meta.url), "utf8"),
+    readFile(new URL("../public/download/install-button.ps1", import.meta.url), "utf8"),
+    readFile(new URL("../public/download/start-button.cmd", import.meta.url), "utf8"),
     readFile(new URL("../start button.cmd", import.meta.url), "utf8"),
     readFile(new URL("../start button.ps1", import.meta.url), "utf8"),
     readFile(new URL("../README.proton-mail.md", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /lumenary-mail-user/);
+  assert.match(downloadPage, /Lumenary Desk Mail herunterladen/);
+  assert.match(downloadPage, /\/download\/install-button\.ps1/);
+  assert.match(downloadPage, /\/download\/start-button\.cmd/);
+  assert.match(downloadPage, /hhts\.lumenary-desk-download/);
   assert.match(page, /submitLogin/);
   assert.match(page, /Mail-App öffnen/);
   assert.match(page, /const features = \[/);
@@ -113,6 +120,10 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(installer, /start button\.lnk/);
   assert.doesNotMatch(installer, /npm\.cmd|run desktop/);
   assert.match(installButton, /desktop\\install-windows\.ps1/);
+  assert.match(publicInstallButton, /github\.com\/NicoLax67\/lumenary-desk\.git/);
+  assert.match(publicInstallButton, /npm\.cmd install/);
+  assert.match(publicInstallButton, /install button\.ps1/);
+  assert.match(publicStartButton, /%LOCALAPPDATA%\\LumenaryDeskMail/);
   assert.match(startCmd, /electron\\dist\\electron\.exe/);
   assert.match(startCmd, /desktop\\main\.cjs/);
   assert.match(startPs1, /Start-Process/);
@@ -123,6 +134,7 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);
   assert.match(css, /\.comparison/);
+  assert.match(css, /\.downloadPage/);
   assert.match(css, /@media \(max-width: 640px\)/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page + layout, /_sites-preview|SkeletonPreview|codex-preview/);
