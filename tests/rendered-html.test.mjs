@@ -39,6 +39,12 @@ test("server-renders the German Lumenary Desk product page", async () => {
   assert.match(html, /Checkout-Demo/);
   assert.match(html, /Testmodus/);
   assert.match(html, /Testbestellung bestätigen/);
+  assert.match(html, /Familie/);
+  assert.match(html, /Bis 6 Personen/);
+  assert.match(html, /Solo für 4 EUR starten/);
+  assert.match(html, /Familie für 8 EUR starten/);
+  assert.match(html, /Team für 12 EUR starten/);
+  assert.match(html, /Studio für 29 EUR anfragen/);
   assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
   assert.doesNotMatch(html, /Proton|Outlook|Microsoft|Google/i);
 });
@@ -64,9 +70,12 @@ test("keeps starter preview code out of the finished MVP", async () => {
   assert.match(page, /submitCheckout/);
   assert.match(page, /Bitte geben Sie eine gültige E-Mail-Adresse ein/);
   assert.match(page, /keine\s+Zahlungsdaten/);
-  assert.match(page, /Studio anfragen/);
+  assert.match(page, /id: "family"/);
+  assert.match(page, /gemeinsame Verwaltung für mehrere Personen/);
+  assert.match(page, /selectedPlan\.detail/);
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);
+  assert.match(css, /\.comparison/);
   assert.match(css, /@media \(max-width: 640px\)/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(page + layout, /_sites-preview|SkeletonPreview|codex-preview/);

@@ -22,23 +22,38 @@ const plans = [
   {
     id: "solo",
     name: "Solo",
-    price: 12,
-    description: "Für eine unabhängig arbeitende Person",
-    action: "Solo kaufen",
+    price: 4,
+    description: "Für eine Person mit allen Kernmodulen",
+    detail: "1 Person, 250 GB Dateien, privater Tresor",
+    action: "Solo für 4 EUR starten",
+    audience: "Einzelperson",
+  },
+  {
+    id: "family",
+    name: "Familie",
+    price: 8,
+    description: "Für Haushalte, die mehrere Personen gemeinsam verwalten",
+    detail: "Bis 6 Personen, Familienkalender, geteilte Ordner und Tresore",
+    action: "Familie für 8 EUR starten",
+    audience: "Familie",
   },
   {
     id: "team",
     name: "Team",
-    price: 29,
+    price: 12,
     description: "Für kleine Teams mit geteilten Arbeitsbereichen",
-    action: "Team kaufen",
+    detail: "Bis 10 Mitglieder, Projekträume, Adminrollen",
+    action: "Team für 12 EUR starten",
+    audience: "Team",
   },
   {
     id: "studio",
     name: "Studio",
-    price: 79,
+    price: 29,
     description: "Für regulierte Teams mit Admin-Kontrollen",
-    action: "Studio anfragen",
+    detail: "Erweiterte Freigaben, Audit-Export, bevorzugter Support",
+    action: "Studio für 29 EUR anfragen",
+    audience: "Organisation",
   },
 ];
 
@@ -78,7 +93,7 @@ export default function Home() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
       nextErrors.email = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
     }
-    if (selectedPlan.id !== "solo" && form.company.trim().length < 2) {
+    if ((selectedPlan.id === "team" || selectedPlan.id === "studio") && form.company.trim().length < 2) {
       nextErrors.company = "Für Team- und Studio-Pläne ist eine Organisation erforderlich.";
     }
 
@@ -220,14 +235,22 @@ export default function Home() {
         <div className="planGrid">
           {plans.map((plan) => (
             <article className="plan" key={plan.id}>
+              <span className="planAudience">{plan.audience}</span>
               <h3>{plan.name}</h3>
               <p>{plan.description}</p>
               <strong>{plan.price} EUR<small>/Monat</small></strong>
+              <p className="planDetail">{plan.detail}</p>
               <button type="button" onClick={() => openCheckout(plan.id)}>
                 {plan.action}
               </button>
             </article>
           ))}
+        </div>
+        <div className="comparison" aria-label="Planvergleich">
+          <span>Solo: privat und günstig</span>
+          <span>Familie: gemeinsame Verwaltung für mehrere Personen</span>
+          <span>Team: Arbeitsbereiche und Rollen</span>
+          <span>Studio: Kontrolle für regulierte Organisationen</span>
         </div>
       </section>
 
@@ -249,7 +272,7 @@ export default function Home() {
                 <h3>Bestellung vorgemerkt</h3>
                 <p>
                   Der Plan {selectedPlan.name} wurde im Testmodus erfolgreich
-                  ausgewählt. Im Live-Betrieb würde hier die Zahlungsbestätigung
+                  für {selectedPlan.price} EUR pro Monat ausgewählt. Im Live-Betrieb würde hier die Zahlungsbestätigung
                   des Anbieters verarbeitet.
                 </p>
                 <button type="button" onClick={() => setCheckoutState("idle")}>
@@ -270,6 +293,7 @@ export default function Home() {
                   <span>Gewählter Plan</span>
                   <strong>{selectedPlan.name}</strong>
                   <p>{selectedPlan.price} EUR pro Monat, Testmodus aktiv</p>
+                  <p>{selectedPlan.detail}</p>
                 </div>
 
                 <label>
