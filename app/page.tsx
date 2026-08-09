@@ -269,6 +269,7 @@ export default function Home() {
           <div className="navLinks">
             <a href="#suite">E-Mail</a>
             <a href="#community">Kreis</a>
+            <a href="#advertising">Werbung</a>
             <a href="#security">Sicherheit</a>
             <a href="#pricing">Preise</a>
           </div>
@@ -451,6 +452,31 @@ export default function Home() {
             </label>
             <button type="submit">Beitrag veröffentlichen</button>
           </form>
+        </div>
+      </section>
+
+      <section className="adSection" id="advertising" aria-label="Anzeige für Lumenary Desk Mail">
+        <div className="adShell">
+          <div>
+            <p className="eyebrow">Anzeige</p>
+            <h2>Ein Posteingang, der wieder ruhig wirkt.</h2>
+            <p>
+              Lumenary Desk Mail verbindet echte E-Mail-Konten, Kalender,
+              Aufgaben und Community-Hilfe in einer klaren Desktop-App.
+            </p>
+          </div>
+          <div className="adCard">
+            <span>Jetzt für Windows</span>
+            <strong>Mail lesen, beantworten und organisieren.</strong>
+            <p>
+              Proton Mail Bridge, IMAP/SMTP, Familienplan und eigener
+              Lumenary Kreis für Fragen und Tipps.
+            </p>
+            <div className="adActions">
+              <a href="/download">Install Button holen</a>
+              <button type="button" onClick={() => openCheckout("family")}>Familienplan ansehen</button>
+            </div>
+          </div>
         </div>
       </section>
 

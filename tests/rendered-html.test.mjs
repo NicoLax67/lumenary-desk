@@ -71,6 +71,9 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(page, /Lumenary Kreis/);
   assert.match(page, /Beitrag veröffentlichen/);
   assert.match(page, /votePost/);
+  assert.match(page, /Anzeige für Lumenary Desk Mail/);
+  assert.match(page, /Ein Posteingang, der wieder ruhig wirkt/);
+  assert.match(page, /Install Button holen/);
   assert.match(page, /Posteingang/);
   assert.match(page, /Kontakte/);
   assert.match(page, /Aufgaben/);
@@ -146,6 +149,8 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(css, /\.checkoutPanel/);
   assert.match(css, /\.communityShell/);
   assert.match(css, /\.communityPost/);
+  assert.match(css, /\.adSection/);
+  assert.match(css, /\.adCard/);
   assert.match(css, /\.comparison/);
   assert.match(css, /\.downloadPage/);
   assert.match(css, /@media \(max-width: 640px\)/);

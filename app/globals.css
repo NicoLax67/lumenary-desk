@@ -652,6 +652,86 @@ h2 {
   line-height: 1.5;
 }
 
+.adSection {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 72px clamp(16px, 5vw, 72px);
+}
+
+.adShell {
+  align-items: center;
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 0.95fr 1.05fr;
+  margin: 0 auto;
+  max-width: 1120px;
+}
+
+.adShell h2 {
+  max-width: 620px;
+}
+
+.adShell p {
+  color: #cfd8cf;
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
+.adCard {
+  background: #fffaf0;
+  border: 1px solid rgba(246, 241, 232, 0.24);
+  border-radius: 8px;
+  color: var(--ink);
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.adCard span {
+  color: var(--coral);
+  font-size: 0.78rem;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.adCard strong {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 0.98;
+}
+
+.adCard p {
+  color: #506057;
+  margin: 0;
+}
+
+.adActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.adActions a,
+.adActions button {
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 720;
+  padding: 12px 16px;
+}
+
+.adActions a {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.adActions button {
+  background: transparent;
+  border-color: rgba(17, 23, 22, 0.2);
+  color: var(--ink);
+}
+
 .planGrid {
   grid-template-columns: repeat(4, 1fr);
 }
@@ -902,6 +982,7 @@ h2 {
   .heroGrid,
   .security,
   .communityShell,
+  .adShell,
   .authGrid,
   .downloadGrid,
   .downloadInfo,
