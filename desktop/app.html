@@ -248,6 +248,32 @@
         transform: translateX(-50%) translateY(0);
       }
 
+      .settings {
+        background: rgba(255, 255, 255, 0.52);
+        border: 1px solid rgba(17, 23, 22, 0.1);
+        border-radius: 8px;
+        margin-top: 18px;
+        padding: 14px;
+      }
+
+      .settings select {
+        border: 1px solid rgba(17, 23, 22, 0.18);
+        border-radius: 7px;
+        min-height: 42px;
+        padding: 8px 10px;
+        width: 100%;
+      }
+
+      .serverGrid {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr 80px;
+      }
+
+      .serverGrid label:first-child {
+        grid-column: 1;
+      }
+
       @media (max-width: 980px) {
         .auth, .app.active { grid-template-columns: 1fr; }
       }
@@ -288,6 +314,7 @@
         <button class="folder" type="button" data-folder="Familie"><span>Familie</span><strong>5</strong></button>
         <button class="folder" type="button" data-folder="Rechnungen"><span>Rechnungen</span><strong>7</strong></button>
         <button class="folder" type="button" data-folder="Archiv"><span>Archiv</span><strong>2,4 TB</strong></button>
+        <button class="folder" type="button" id="accountSettings"><span>Konto verbinden</span><strong>IMAP</strong></button>
         <button id="logout" style="margin-top: 28px; width: 100%">Abmelden</button>
       </aside>
 
@@ -342,6 +369,39 @@
           <strong>Offline bereit</strong>
           <p class="muted">Posteingang und Archiv sind lokal durchsuchbar.</p>
         </div>
+        <section class="settings" id="settings">
+          <p class="eyebrow">Konto</p>
+          <h3>Mailkonto verbinden</h3>
+          <label>
+            Anbieter
+            <select id="provider">
+              <option value="standard">Standard IMAP/SMTP</option>
+              <option value="proton">Proton Mail via Bridge</option>
+            </select>
+          </label>
+          <div class="serverGrid">
+            <label>
+              IMAP-Server
+              <input id="imapHost" value="imap.example.com" />
+            </label>
+            <label>
+              Port
+              <input id="imapPort" value="993" />
+            </label>
+            <label>
+              SMTP-Server
+              <input id="smtpHost" value="smtp.example.com" />
+            </label>
+            <label>
+              Port
+              <input id="smtpPort" value="465" />
+            </label>
+          </div>
+          <p class="muted" id="providerHint">
+            Für normale Anbieter tragen Sie IMAP- und SMTP-Daten ein.
+          </p>
+          <button type="button" id="saveAccount">Konto speichern</button>
+        </section>
       </aside>
     </section>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -359,6 +419,12 @@
       const readerTitle = document.getElementById("readerTitle");
       const readerBody = document.getElementById("readerBody");
       const toast = document.getElementById("toast");
+      const provider = document.getElementById("provider");
+      const providerHint = document.getElementById("providerHint");
+      const imapHost = document.getElementById("imapHost");
+      const imapPort = document.getElementById("imapPort");
+      const smtpHost = document.getElementById("smtpHost");
+      const smtpPort = document.getElementById("smtpPort");
       const key = "lumenary-desktop-user";
       let selectedSubject = "";
 
@@ -440,6 +506,41 @@
             open();
           }
         });
+      });
+
+      document.getElementById("accountSettings").addEventListener("click", () => {
+        document.getElementById("settings").scrollIntoView({ behavior: "smooth", block: "center" });
+        notify("Kontoeinstellungen geöffnet");
+      });
+
+      provider.addEventListener("change", () => {
+        if (provider.value === "proton") {
+          imapHost.value = "127.0.0.1";
+          imapPort.value = "1143";
+          smtpHost.value = "127.0.0.1";
+          smtpPort.value = "1025";
+          providerHint.textContent = "Proton Mail wird über Proton Mail Bridge verbunden. Öffnen Sie Bridge, kopieren Sie dort Benutzername und Passwort und lassen Sie Bridge im Hintergrund laufen.";
+          notify("Proton-Bridge-Einstellungen übernommen");
+          return;
+        }
+
+        imapHost.value = "imap.example.com";
+        imapPort.value = "993";
+        smtpHost.value = "smtp.example.com";
+        smtpPort.value = "465";
+        providerHint.textContent = "Für normale Anbieter tragen Sie IMAP- und SMTP-Daten ein.";
+      });
+
+      document.getElementById("saveAccount").addEventListener("click", () => {
+        const account = {
+          provider: provider.value,
+          imapHost: imapHost.value,
+          imapPort: imapPort.value,
+          smtpHost: smtpHost.value,
+          smtpPort: smtpPort.value
+        };
+        localStorage.setItem("lumenary-mail-account", JSON.stringify(account));
+        notify(provider.value === "proton" ? "Proton-Bridge-Konto gespeichert" : "IMAP/SMTP-Konto gespeichert");
       });
     </script>
   </body>

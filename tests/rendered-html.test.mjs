@@ -41,7 +41,7 @@ test("server-renders the required email login gate", async () => {
 });
 
 test("keeps checkout, desktop app, and email positioning wired", async () => {
-  const [page, layout, packageJson, css, desktopMain, desktopHtml, installer] = await Promise.all([
+  const [page, layout, packageJson, css, desktopMain, desktopHtml, installer, installButton, protonReadme] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
@@ -49,6 +49,8 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
     readFile(new URL("../desktop/main.cjs", import.meta.url), "utf8"),
     readFile(new URL("../desktop/app.html", import.meta.url), "utf8"),
     readFile(new URL("../desktop/install-windows.ps1", import.meta.url), "utf8"),
+    readFile(new URL("../install button.ps1", import.meta.url), "utf8"),
+    readFile(new URL("../README.proton-mail.md", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /lumenary-mail-user/);
@@ -80,8 +82,16 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopHtml, /Ordner " \+ folder\.dataset\.folder \+ " geöffnet/);
   assert.match(desktopHtml, /Antwortentwurf erstellt/);
   assert.match(desktopHtml, /search\.addEventListener\("input"/);
+  assert.match(desktopHtml, /Proton Mail via Bridge/);
+  assert.match(desktopHtml, /127\.0\.0\.1/);
+  assert.match(desktopHtml, /1143/);
+  assert.match(desktopHtml, /1025/);
+  assert.match(desktopHtml, /lumenary-mail-account/);
   assert.match(installer, /electron\.exe/);
   assert.doesNotMatch(installer, /npm\.cmd|run desktop/);
+  assert.match(installButton, /desktop\\install-windows\.ps1/);
+  assert.match(protonReadme, /Proton Mail Bridge/);
+  assert.match(protonReadme, /127\.0\.0\.1/);
   assert.match(css, /\.authCard/);
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);
