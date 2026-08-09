@@ -13,18 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lumenary Desk | Private Desktop Productivity Suite",
+  title: "Lumenary Desk | Private Desktop-Produktivitätssuite",
   description:
-    "Buy Lumenary Desk, a private desktop productivity suite for mail, passwords, calendar, files, notes, and focus work.",
+    "Kaufen Sie Lumenary Desk, eine private Desktop-Produktivitätssuite für Mail, Passwörter, Kalender, Dateien, Notizen und Fokusarbeit.",
   openGraph: {
     title: "Lumenary Desk",
-    description: "Private work, calmly organized.",
+    description: "Private Arbeit, ruhig organisiert.",
     images: ["/og.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Lumenary Desk",
-    description: "Private work, calmly organized.",
+    description: "Private Arbeit, ruhig organisiert.",
     images: ["/og.png"],
   },
   icons: {
