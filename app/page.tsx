@@ -20,6 +20,38 @@ const features = [
 
 const folders = ["Posteingang", "Gesendet", "Entwürfe", "Familie", "Rechnungen", "Archiv"];
 
+const communityChannels = ["Mailhilfe", "Arbeitsabläufe", "Proton Bridge", "Familie", "Wünsche"];
+
+const starterPosts = [
+  {
+    id: 1,
+    channel: "Mailhilfe",
+    title: "Wie halte ich den Posteingang leer?",
+    author: "Lena",
+    body: "Ich nutze Regeln für Rechnungen und lasse nur persönliche Antworten oben stehen.",
+    votes: 38,
+    replies: ["Regeln plus Aufgaben funktionieren gut.", "Ich archiviere alles nach Antwort."],
+  },
+  {
+    id: 2,
+    channel: "Proton Bridge",
+    title: "Bridge-Verbindung schnell prüfen",
+    author: "Nico",
+    body: "Erst Proton Mail Bridge starten, dann in Lumenary Benutzername und Passwort aus Bridge kopieren.",
+    votes: 24,
+    replies: ["Der lokale Port 1143 war bei mir wichtig."],
+  },
+  {
+    id: 3,
+    channel: "Wünsche",
+    title: "Familienpostfach mit klaren Rollen",
+    author: "Mara",
+    body: "Für Familie wäre praktisch: Eltern verwalten Regeln, Kinder sehen nur eigene Ordner.",
+    votes: 19,
+    replies: ["Gute Idee für den Familienplan."],
+  },
+];
+
 const plans = [
   {
     id: "solo",
@@ -65,6 +97,9 @@ export default function Home() {
   const [selectedPlanId, setSelectedPlanId] = useState(plans[1].id);
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("idle");
   const [form, setForm] = useState({ name: "", email: "", company: "" });
+  const [communityPosts, setCommunityPosts] = useState(starterPosts);
+  const [postForm, setPostForm] = useState({ title: "", channel: communityChannels[0], body: "" });
+  const [communityQuery, setCommunityQuery] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loginEmail, setLoginEmail] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -78,6 +113,14 @@ export default function Home() {
     () => plans.find((plan) => plan.id === selectedPlanId) ?? plans[0],
     [selectedPlanId],
   );
+
+  const visibleCommunityPosts = useMemo(() => {
+    const query = communityQuery.trim().toLowerCase();
+    if (!query) return communityPosts;
+    return communityPosts.filter((post) =>
+      `${post.channel} ${post.title} ${post.author} ${post.body}`.toLowerCase().includes(query),
+    );
+  }, [communityPosts, communityQuery]);
 
   function openCheckout(planId: string) {
     setSelectedPlanId(planId);
@@ -135,6 +178,33 @@ export default function Home() {
 
     setCheckoutState("success");
     window.location.hash = "checkout";
+  }
+
+  function submitPost(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (postForm.title.trim().length < 3 || postForm.body.trim().length < 8) {
+      return;
+    }
+
+    setCommunityPosts((current) => [
+      {
+        id: Date.now(),
+        channel: postForm.channel,
+        title: postForm.title.trim(),
+        author: userEmail.split("@")[0] || "Mitglied",
+        body: postForm.body.trim(),
+        votes: 1,
+        replies: [],
+      },
+      ...current,
+    ]);
+    setPostForm({ title: "", channel: communityChannels[0], body: "" });
+  }
+
+  function votePost(postId: number) {
+    setCommunityPosts((current) =>
+      current.map((post) => (post.id === postId ? { ...post, votes: post.votes + 1 } : post)),
+    );
   }
 
   if (!userEmail) {
@@ -198,6 +268,7 @@ export default function Home() {
           </a>
           <div className="navLinks">
             <a href="#suite">E-Mail</a>
+            <a href="#community">Kreis</a>
             <a href="#security">Sicherheit</a>
             <a href="#pricing">Preise</a>
           </div>
@@ -305,6 +376,82 @@ export default function Home() {
           auf mehrere Postfächer, lokale Suche, verschlüsselte Gerätespeicherung,
           klare Freigaben und nachvollziehbare Regeln.
         </p>
+      </section>
+
+      <section className="community" id="community">
+        <div className="sectionIntro">
+          <p className="eyebrow">Lumenary Kreis</p>
+          <h2>Eine eigene Community für Mailfragen.</h2>
+          <p>
+            Fragen stellen, Lösungen sammeln, Wünsche besprechen und hilfreiche
+            Beiträge nach oben wählen. Alles eigenständig für Lumenary Desk.
+          </p>
+        </div>
+
+        <div className="communityShell">
+          <aside className="channelPanel" aria-label="Community-Kanäle">
+            <strong>Kanäle</strong>
+            {communityChannels.map((channel) => (
+              <span key={channel}>{channel}</span>
+            ))}
+          </aside>
+
+          <section className="threadPanel" aria-label="Community-Beiträge">
+            <div className="communityTools">
+              <input
+                value={communityQuery}
+                onChange={(event) => setCommunityQuery(event.target.value)}
+                placeholder="Beitrag oder Thema suchen"
+                aria-label="Community durchsuchen"
+              />
+            </div>
+            {visibleCommunityPosts.map((post) => (
+              <article className="communityPost" key={post.id}>
+                <button type="button" onClick={() => votePost(post.id)} aria-label={`${post.title} hilfreich finden`}>
+                  ↑ {post.votes}
+                </button>
+                <div>
+                  <span>{post.channel} · {post.author}</span>
+                  <h3>{post.title}</h3>
+                  <p>{post.body}</p>
+                  <small>{post.replies.length} Antworten</small>
+                </div>
+              </article>
+            ))}
+          </section>
+
+          <form className="postComposer" onSubmit={submitPost}>
+            <strong>Neuen Beitrag schreiben</strong>
+            <label>
+              Kanal
+              <select
+                value={postForm.channel}
+                onChange={(event) => setPostForm({ ...postForm, channel: event.target.value })}
+              >
+                {communityChannels.map((channel) => (
+                  <option key={channel} value={channel}>{channel}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Titel
+              <input
+                value={postForm.title}
+                onChange={(event) => setPostForm({ ...postForm, title: event.target.value })}
+                placeholder="Kurze Frage oder Idee"
+              />
+            </label>
+            <label>
+              Text
+              <textarea
+                value={postForm.body}
+                onChange={(event) => setPostForm({ ...postForm, body: event.target.value })}
+                placeholder="Was möchten Sie teilen?"
+              />
+            </label>
+            <button type="submit">Beitrag veröffentlichen</button>
+          </form>
+        </div>
       </section>
 
       <section className="pricing" id="pricing">

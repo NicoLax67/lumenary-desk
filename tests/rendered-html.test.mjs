@@ -67,6 +67,10 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(page, /submitLogin/);
   assert.match(page, /Mail-App öffnen/);
   assert.match(page, /const features = \[/);
+  assert.match(page, /const communityChannels = \[/);
+  assert.match(page, /Lumenary Kreis/);
+  assert.match(page, /Beitrag veröffentlichen/);
+  assert.match(page, /votePost/);
   assert.match(page, /Posteingang/);
   assert.match(page, /Kontakte/);
   assert.match(page, /Aufgaben/);
@@ -140,6 +144,8 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(css, /\.authCard/);
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);
+  assert.match(css, /\.communityShell/);
+  assert.match(css, /\.communityPost/);
   assert.match(css, /\.comparison/);
   assert.match(css, /\.downloadPage/);
   assert.match(css, /@media \(max-width: 640px\)/);

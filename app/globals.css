@@ -467,7 +467,8 @@ h2 {
 }
 
 .suite,
-.pricing {
+.pricing,
+.community {
   padding: 82px clamp(16px, 5vw, 72px);
 }
 
@@ -532,6 +533,123 @@ h2 {
   color: #cfd8cf;
   font-size: 1.12rem;
   line-height: 1.7;
+}
+
+.community {
+  background: #eef1e7;
+}
+
+.sectionIntro p {
+  color: #526159;
+  line-height: 1.6;
+}
+
+.communityShell {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 220px minmax(0, 1fr) 320px;
+  margin: 0 auto;
+  max-width: 1120px;
+}
+
+.channelPanel,
+.threadPanel,
+.postComposer {
+  background: #fffaf0;
+  border: 1px solid rgba(17, 23, 22, 0.12);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.channelPanel,
+.postComposer {
+  align-self: start;
+  display: grid;
+  gap: 12px;
+}
+
+.channelPanel span {
+  background: rgba(126, 203, 116, 0.14);
+  border: 1px solid rgba(126, 203, 116, 0.26);
+  border-radius: 7px;
+  color: #31423a;
+  padding: 10px;
+}
+
+.threadPanel {
+  display: grid;
+  gap: 12px;
+}
+
+.communityTools input,
+.postComposer input,
+.postComposer select,
+.postComposer textarea {
+  background: white;
+  border: 1px solid rgba(17, 23, 22, 0.18);
+  border-radius: 7px;
+  color: var(--ink);
+  font: inherit;
+  min-height: 44px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.postComposer textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.postComposer label {
+  color: #26312e;
+  display: grid;
+  font-weight: 720;
+  gap: 8px;
+}
+
+.postComposer button {
+  background: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--paper);
+  cursor: pointer;
+  font-weight: 720;
+  padding: 12px 16px;
+}
+
+.communityPost {
+  align-items: start;
+  border: 1px solid rgba(17, 23, 22, 0.1);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 72px 1fr;
+  padding: 16px;
+}
+
+.communityPost button {
+  background: rgba(230, 170, 75, 0.16);
+  border: 1px solid rgba(230, 170, 75, 0.34);
+  border-radius: 7px;
+  color: #6b4a18;
+  cursor: pointer;
+  font-weight: 820;
+  padding: 10px;
+}
+
+.communityPost span,
+.communityPost small {
+  color: #66736b;
+  font-size: 0.88rem;
+}
+
+.communityPost h3 {
+  margin: 5px 0 8px;
+}
+
+.communityPost p {
+  color: #46544d;
+  line-height: 1.5;
 }
 
 .planGrid {
@@ -783,6 +901,7 @@ h2 {
 
   .heroGrid,
   .security,
+  .communityShell,
   .authGrid,
   .downloadGrid,
   .downloadInfo,
@@ -803,6 +922,18 @@ h2 {
   .planGrid,
   .comparison {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .communityShell {
+    grid-template-columns: 1fr;
+  }
+
+  .channelPanel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .channelPanel strong {
+    grid-column: 1 / -1;
   }
 }
 
@@ -847,6 +978,14 @@ h2 {
   .appGrid,
   .planGrid,
   .comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .channelPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .communityPost {
     grid-template-columns: 1fr;
   }
 }
