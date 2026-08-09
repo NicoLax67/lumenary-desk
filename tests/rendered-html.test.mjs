@@ -33,11 +33,11 @@ test("server-renders the required email login gate", async () => {
   assert.match(html, /Anmeldung erforderlich/);
   assert.match(html, /Ihr E-Mail-Programm ist geschützt/);
   assert.match(html, /Mail-App öffnen/);
-  assert.match(html, /Keine offene Demo/);
+  assert.match(html, /Echte Mail-App/);
   assert.match(html, /Lokale Sitzung/);
   assert.doesNotMatch(html, /Priorisierter Posteingang|Mail-Plan bestellen/);
   assert.doesNotMatch(html, /Desktop-Produktivitätssuite|Tresormodell|Passkeys/i);
-  assert.doesNotMatch(html, /Proton|Outlook|Microsoft|Google/i);
+  assert.doesNotMatch(html, /Outlook|Microsoft|Google/i);
 });
 
 test("keeps checkout, desktop app, and email positioning wired", async () => {
@@ -97,10 +97,16 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopHtml, /@proton\.me/);
   assert.match(desktopHtml, /lumenary-desktop-user/);
   assert.match(desktopHtml, /data-folder="Posteingang"/);
-  assert.match(desktopHtml, /data-subject="Angebot für Website-Relaunch"/);
+  assert.match(desktopMain, /ImapFlow/);
+  assert.match(desktopMain, /nodemailer/);
+  assert.match(desktopMain, /lumenary:mail-fetch-inbox/);
+  assert.match(desktopPreload, /lumenaryMail/);
   assert.match(desktopHtml, /readerTitle\.textContent/);
   assert.match(desktopHtml, /Ordner " \+ folder\.dataset\.folder \+ " geöffnet/);
-  assert.match(desktopHtml, /Antwortentwurf erstellt/);
+  assert.match(desktopHtml, /Posteingang laden/);
+  assert.match(desktopHtml, /Verbindung testen/);
+  assert.match(desktopHtml, /fetchInbox/);
+  assert.match(desktopHtml, /sendReply/);
   assert.match(desktopHtml, /search\.addEventListener\("input"/);
   assert.match(desktopHtml, /Proton Mail via Bridge/);
   assert.match(desktopHtml, /127\.0\.0\.1/);

@@ -156,7 +156,7 @@ export default function Home() {
               </p>
               <div className="proof">
                 <span>Lokale Sitzung</span>
-                <span>Keine offene Demo</span>
+                <span>Echte Mail-App</span>
                 <span>Desktop-App bereit</span>
               </div>
             </div>
@@ -177,9 +177,9 @@ export default function Home() {
               </label>
               <button type="submit">Mail-App öffnen</button>
               <p>
-                MVP-Hinweis: Diese Anmeldung erstellt eine lokale Sitzung auf
-                diesem Gerät. Für echte Konten braucht Lumenary Desk später ein
-                Authentifizierungs-Backend mit Bestätigungsmail.
+                Diese Anmeldung erstellt eine lokale Sitzung auf diesem Gerät.
+                In der Desktop-App verbinden Sie Ihr echtes Mailkonto über
+                IMAP/SMTP oder Proton Mail Bridge.
               </p>
             </form>
           </div>
@@ -227,7 +227,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="desktop" aria-label="Vorschau des E-Mail-Programms Lumenary Desk">
+          <div className="desktop" aria-label="E-Mail-Programm Lumenary Desk">
             <aside className="rail">
               <span className="railLogo">L</span>
               {["Mail", "Kalender", "Kontakte", "Aufgaben", "Regeln", "Archiv"].map((item) => (
@@ -301,7 +301,7 @@ export default function Home() {
         </div>
         <p>
           Lumenary Desk ist keine Kopie eines bestehenden Mailprogramms. Name,
-          Oberfläche und Abläufe sind eigenständig. Das MVP konzentriert sich
+          Oberfläche und Abläufe sind eigenständig. Die App konzentriert sich
           auf mehrere Postfächer, lokale Suche, verschlüsselte Gerätespeicherung,
           klare Freigaben und nachvollziehbare Regeln.
         </p>

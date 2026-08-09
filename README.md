@@ -1,13 +1,12 @@
 # Lumenary Desk Mail
 
-Lumenary Desk Mail is a desktop-focused email client prototype with a local
-Electron shell, a German product website, a download page, and Windows launcher
-scripts.
+Lumenary Desk Mail is a desktop-focused email client with a local Electron
+shell, a German product website, a download page, and Windows launcher scripts.
 
 ## Features
 
 - Local desktop app with email sign-in gate
-- Interactive inbox, folders, search, reader actions, calendar notes, and tasks
+- Real IMAP inbox loading, SMTP replies, folders, search, reader actions, calendar notes, and tasks
 - Small email assistant letter that explains the app and selected messages
 - Proton Mail Bridge settings for local IMAP/SMTP compatibility
 - Windows install and start launchers

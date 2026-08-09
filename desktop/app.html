@@ -23,7 +23,7 @@
         min-height: 100vh;
       }
 
-      button, input { font: inherit; }
+      button, input, textarea, select { font: inherit; }
 
       .brand {
         align-items: center;
@@ -98,12 +98,17 @@
         gap: 8px;
       }
 
-      input {
+      input, textarea {
         border: 1px solid rgba(17, 23, 22, 0.18);
         border-radius: 7px;
         min-height: 48px;
         padding: 10px 12px;
         width: 100%;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
       }
 
       .error {
@@ -184,6 +189,13 @@
       }
 
       .message small, .muted { color: #66736b; }
+
+      .emptyState {
+        border: 1px dashed rgba(17, 23, 22, 0.22);
+        border-radius: 8px;
+        color: #4f5f56;
+        padding: 18px;
+      }
 
       .tag {
         color: var(--coral);
@@ -348,27 +360,18 @@
           </div>
           <input class="search" id="search" placeholder="Mail, Kontakt oder Anhang suchen" />
         </div>
-        <button class="message" type="button" data-subject="Angebot für Website-Relaunch" data-sender="Mara Chen">
-          <div><strong>Angebot für Website-Relaunch</strong><br /><small>Mara Chen</small></div>
-          <div><span>09:18</span><span class="tag">Antwort</span></div>
-        </button>
-        <button class="message" type="button" data-subject="Kalendereinladung: Strategie" data-sender="Jon Bell">
-          <div><strong>Kalendereinladung: Strategie</strong><br /><small>Jon Bell</small></div>
-          <div><span>10:05</span><span class="tag">Termin</span></div>
-        </button>
-        <button class="message" type="button" data-subject="Rechnung August" data-sender="Northstar Labs">
-          <div><strong>Rechnung August</strong><br /><small>Northstar Labs</small></div>
-          <div><span>Gestern</span><span class="tag">Beleg</span></div>
-        </button>
-        <button class="message" type="button" data-subject="Neue Nachricht aus dem Familienpostfach" data-sender="Lea Sommer">
-          <div><strong>Neue Nachricht aus dem Familienpostfach</strong><br /><small>Lea Sommer</small></div>
-          <div><span>Di</span><span class="tag">Familie</span></div>
-        </button>
+        <div id="messageList" class="emptyState">
+          Verbinden Sie Ihr Mailkonto und laden Sie den Posteingang. Hier erscheinen echte E-Mails aus Ihrem IMAP-Postfach.
+        </div>
 
         <section class="reader" id="reader">
           <p class="eyebrow">Ausgewählte Nachricht</p>
           <h3 id="readerTitle">Wählen Sie eine E-Mail aus</h3>
-          <p class="muted" id="readerBody">Klicken Sie auf eine Nachricht, um Vorschau und Aktionen zu öffnen.</p>
+          <p class="muted" id="readerBody">Nach dem Laden des Posteingangs können Sie echte Nachrichten öffnen.</p>
+          <label>
+            Antworttext
+            <textarea id="replyText" placeholder="Ihre Antwort schreiben"></textarea>
+          </label>
           <div class="readerActions">
             <button type="button" id="reply">Antworten</button>
             <button type="button" id="archive" class="ghostButton">Archivieren</button>
@@ -388,7 +391,7 @@
           </p>
           <ul>
             <li>Ordner wechseln sortiert Ihre Ansicht.</li>
-            <li>Eine Nachricht öffnet Vorschau und Aktionen.</li>
+            <li>Eine echte Nachricht öffnet Inhalt und Aktionen.</li>
             <li>Proton Mail funktioniert über Proton Mail Bridge.</li>
           </ul>
           <button type="button" id="explainApp">App erklären</button>
@@ -417,6 +420,14 @@
           </label>
           <div class="serverGrid">
             <label>
+              Benutzername
+              <input id="mailUser" placeholder="Bridge-Benutzername oder E-Mail" />
+            </label>
+            <label>
+              Passwort
+              <input id="mailPass" type="password" placeholder="Bridge-Passwort" />
+            </label>
+            <label>
               IMAP-Server
               <input id="imapHost" value="imap.example.com" />
             </label>
@@ -436,7 +447,11 @@
           <p class="muted" id="providerHint">
             Für normale Anbieter tragen Sie IMAP- und SMTP-Daten ein.
           </p>
-          <button type="button" id="saveAccount">Konto speichern</button>
+          <div class="readerActions">
+            <button type="button" id="saveAccount">Konto speichern</button>
+            <button type="button" id="testAccount" class="ghostButton">Verbindung testen</button>
+            <button type="button" id="loadInbox" class="ghostButton">Posteingang laden</button>
+          </div>
         </section>
       </aside>
     </section>
@@ -454,17 +469,23 @@
       const search = document.getElementById("search");
       const readerTitle = document.getElementById("readerTitle");
       const readerBody = document.getElementById("readerBody");
+      const replyText = document.getElementById("replyText");
+      const messageList = document.getElementById("messageList");
       const assistantText = document.getElementById("assistantText");
       const toast = document.getElementById("toast");
       const provider = document.getElementById("provider");
       const providerHint = document.getElementById("providerHint");
+      const mailUser = document.getElementById("mailUser");
+      const mailPass = document.getElementById("mailPass");
       const imapHost = document.getElementById("imapHost");
       const imapPort = document.getElementById("imapPort");
       const smtpHost = document.getElementById("smtpHost");
       const smtpPort = document.getElementById("smtpPort");
       const updateApp = document.getElementById("updateApp");
       const key = "lumenary-desktop-user";
+      const accountKey = "lumenary-mail-account";
       let selectedSubject = "";
+      let selectedMessage = null;
 
       function notify(message) {
         toast.textContent = message;
@@ -488,6 +509,105 @@
         return value;
       }
 
+      function getAccount() {
+        return {
+          provider: provider.value,
+          email: localStorage.getItem(key) || email.value,
+          user: mailUser.value,
+          pass: mailPass.value,
+          imapHost: imapHost.value,
+          imapPort: imapPort.value,
+          smtpHost: smtpHost.value,
+          smtpPort: smtpPort.value
+        };
+      }
+
+      function saveAccount() {
+        const account = getAccount();
+        localStorage.setItem(accountKey, JSON.stringify({
+          provider: account.provider,
+          email: account.email,
+          user: account.user,
+          imapHost: account.imapHost,
+          imapPort: account.imapPort,
+          smtpHost: account.smtpHost,
+          smtpPort: account.smtpPort
+        }));
+      }
+
+      function restoreAccount() {
+        try {
+          const account = JSON.parse(localStorage.getItem(accountKey) || "null");
+          if (!account) return;
+          provider.value = account.provider || "standard";
+          mailUser.value = account.user || "";
+          imapHost.value = account.imapHost || imapHost.value;
+          imapPort.value = account.imapPort || imapPort.value;
+          smtpHost.value = account.smtpHost || smtpHost.value;
+          smtpPort.value = account.smtpPort || smtpPort.value;
+        } catch {
+          localStorage.removeItem(accountKey);
+        }
+      }
+
+      function formatDate(value) {
+        if (!value) return "";
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? "" : date.toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" });
+      }
+
+      function openMessage(mail) {
+        selectedMessage = mail;
+        selectedSubject = mail.subject;
+        readerTitle.textContent = mail.subject;
+        readerBody.textContent = (mail.text || "Diese Nachricht hat keinen Textinhalt.").slice(0, 4000);
+        replyText.value = "";
+        assistantText.textContent = "Brief vom Assistenten: Diese echte E-Mail ist aus Ihrem verbundenen Postfach geladen. Prüfen Sie Absender, Inhalt und schreiben Sie bei Bedarf direkt eine Antwort.";
+        notify("Echte E-Mail geöffnet");
+      }
+
+      function renderMessages(messages) {
+        if (!messages.length) {
+          messageList.className = "emptyState";
+          messageList.textContent = "Der Posteingang ist leer oder es konnten keine Nachrichten geladen werden.";
+          return;
+        }
+
+        messageList.className = "";
+        messageList.innerHTML = "";
+        messages.forEach((mail) => {
+          const button = document.createElement("button");
+          button.className = "message";
+          button.type = "button";
+          button.innerHTML = "<div><strong></strong><br><small></small></div><div><span></span><span class=\"tag\"></span></div>";
+          button.querySelector("strong").textContent = mail.subject;
+          button.querySelector("small").textContent = mail.from;
+          button.querySelector("span").textContent = formatDate(mail.date);
+          button.querySelector(".tag").textContent = mail.unread ? "Neu" : "Gelesen";
+          button.addEventListener("click", () => openMessage(mail));
+          messageList.appendChild(button);
+        });
+      }
+
+      async function loadInbox() {
+        if (!window.lumenaryMail) {
+          notify("Mail-Modul ist in dieser Umgebung nicht verfügbar");
+          return;
+        }
+        saveAccount();
+        messageList.className = "emptyState";
+        messageList.textContent = "Posteingang wird geladen...";
+        const result = await window.lumenaryMail.fetchInbox(getAccount());
+        if (!result.ok) {
+          messageList.textContent = result.message || "Posteingang konnte nicht geladen werden";
+          notify(messageList.textContent);
+          return;
+        }
+        renderMessages(result.messages || []);
+        notify("Posteingang geladen");
+      }
+
+      restoreAccount();
       const saved = localStorage.getItem(key);
       if (saved) showApp(saved);
 
@@ -517,16 +637,6 @@
         });
       });
 
-      document.querySelectorAll(".message").forEach((message) => {
-        message.addEventListener("click", () => {
-          selectedSubject = message.dataset.subject;
-          readerTitle.textContent = selectedSubject;
-          readerBody.textContent = "Nachricht von " + message.dataset.sender + ". Dies ist eine lokale Vorschau mit Mail-Aktionen für den MVP.";
-          assistantText.textContent = "Brief vom Assistenten: Diese E-Mail wurde geöffnet. Nutzen Sie Antworten für eine direkte Reaktion, Archivieren zum Aufräumen oder Aufgabe erstellen, wenn daraus Arbeit entsteht.";
-          notify("Nachricht geöffnet");
-        });
-      });
-
       search.addEventListener("input", () => {
         const term = search.value.trim().toLowerCase();
         document.querySelectorAll(".message").forEach((message) => {
@@ -534,8 +644,27 @@
         });
       });
 
-      document.getElementById("reply").addEventListener("click", () => {
-        notify(selectedSubject ? "Antwortentwurf erstellt" : "Bitte zuerst eine Nachricht auswählen");
+      document.getElementById("reply").addEventListener("click", async () => {
+        if (!selectedMessage) {
+          notify("Bitte zuerst eine Nachricht auswählen");
+          return;
+        }
+        if (!replyText.value.trim()) {
+          notify("Bitte Antworttext schreiben");
+          return;
+        }
+        if (!window.lumenaryMail) {
+          notify("Mail-Modul ist in dieser Umgebung nicht verfügbar");
+          return;
+        }
+
+        const result = await window.lumenaryMail.sendReply({
+          account: getAccount(),
+          to: selectedMessage.from,
+          subject: selectedSubject,
+          text: replyText.value
+        });
+        notify(result.ok ? "E-Mail wurde gesendet" : (result.message || "Senden fehlgeschlagen"));
       });
 
       document.getElementById("archive").addEventListener("click", () => {
@@ -586,16 +715,20 @@
       });
 
       document.getElementById("saveAccount").addEventListener("click", () => {
-        const account = {
-          provider: provider.value,
-          imapHost: imapHost.value,
-          imapPort: imapPort.value,
-          smtpHost: smtpHost.value,
-          smtpPort: smtpPort.value
-        };
-        localStorage.setItem("lumenary-mail-account", JSON.stringify(account));
+        saveAccount();
         notify(provider.value === "proton" ? "Proton-Bridge-Konto gespeichert" : "IMAP/SMTP-Konto gespeichert");
       });
+
+      document.getElementById("testAccount").addEventListener("click", async () => {
+        if (!window.lumenaryMail) {
+          notify("Mail-Modul ist in dieser Umgebung nicht verfügbar");
+          return;
+        }
+        const result = await window.lumenaryMail.testConnection(getAccount());
+        notify(result.message || (result.ok ? "Verbindung erfolgreich" : "Verbindung fehlgeschlagen"));
+      });
+
+      document.getElementById("loadInbox").addEventListener("click", loadInbox);
 
       updateApp.addEventListener("click", async () => {
         if (!window.lumenaryUpdater) {
