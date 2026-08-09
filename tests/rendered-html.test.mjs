@@ -84,6 +84,10 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopPreload, /lumenaryUpdater/);
   assert.match(desktopPreload, /lumenary:update-app/);
   assert.match(desktopHtml, /Es wird keine ChatGPT-Anmeldung benötigt/);
+  assert.match(desktopHtml, /nicoLaxx\.protonme/);
+  assert.match(desktopHtml, /normalizeEmailInput/);
+  assert.match(desktopHtml, /\.protonme/);
+  assert.match(desktopHtml, /@proton\.me/);
   assert.match(desktopHtml, /lumenary-desktop-user/);
   assert.match(desktopHtml, /data-folder="Posteingang"/);
   assert.match(desktopHtml, /data-subject="Angebot für Website-Relaunch"/);

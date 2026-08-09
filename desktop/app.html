@@ -314,12 +314,13 @@
         <h2>Anmelden</h2>
         <label>
           E-Mail-Adresse
-          <input id="email" autocomplete="email" inputmode="email" placeholder="name@example.com" />
+          <input id="email" autocomplete="email" inputmode="email" placeholder="name@proton.me" />
         </label>
         <p class="error" id="error" role="alert"></p>
         <button type="submit">Mail-App öffnen</button>
         <p class="muted">
           Die Sitzung wird lokal in dieser Desktop-App gespeichert. Es wird keine ChatGPT-Anmeldung benötigt.
+          Proton-Beispiel: Aus <strong>nicoLaxx.protonme</strong> wird automatisch <strong>nicolaxx@proton.me</strong>.
         </p>
       </form>
     </section>
@@ -478,16 +479,26 @@
         welcome.textContent = "Posteingang für " + address;
       }
 
+      function normalizeEmailInput(rawValue) {
+        const value = rawValue.trim().toLowerCase();
+        if (value.includes("@")) return value;
+        if (value.endsWith(".protonme")) return value.replace(/\.protonme$/, "@proton.me");
+        if (value.endsWith(".protonmail")) return value.replace(/\.protonmail$/, "@protonmail.com");
+        if (/^[a-z0-9._%+-]+$/.test(value)) return value + "@proton.me";
+        return value;
+      }
+
       const saved = localStorage.getItem(key);
       if (saved) showApp(saved);
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        const value = email.value.trim().toLowerCase();
+        const value = normalizeEmailInput(email.value);
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          error.textContent = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+          error.textContent = "Bitte geben Sie eine gültige E-Mail-Adresse ein, zum Beispiel nicoLaxx@proton.me.";
           return;
         }
+        email.value = value;
         localStorage.setItem(key, value);
         showApp(value);
       });
