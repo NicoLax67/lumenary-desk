@@ -74,6 +74,12 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.doesNotMatch(desktopMain, /lumenary-desk\.nicolax67\.chatgpt\.site|loadURL/);
   assert.match(desktopHtml, /Es wird keine ChatGPT-Anmeldung benötigt/);
   assert.match(desktopHtml, /lumenary-desktop-user/);
+  assert.match(desktopHtml, /data-folder="Posteingang"/);
+  assert.match(desktopHtml, /data-subject="Angebot für Website-Relaunch"/);
+  assert.match(desktopHtml, /readerTitle\.textContent/);
+  assert.match(desktopHtml, /Ordner " \+ folder\.dataset\.folder \+ " geöffnet/);
+  assert.match(desktopHtml, /Antwortentwurf erstellt/);
+  assert.match(desktopHtml, /search\.addEventListener\("input"/);
   assert.match(installer, /electron\.exe/);
   assert.doesNotMatch(installer, /npm\.cmd|run desktop/);
   assert.match(css, /\.authCard/);
