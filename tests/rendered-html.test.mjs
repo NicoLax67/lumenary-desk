@@ -23,35 +23,35 @@ async function render() {
   );
 }
 
-test("server-renders Lumenary Desk as a German email program", async () => {
+test("server-renders the required email login gate", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /<title>Lumenary Desk \| Privates Desktop-E-Mail-Programm<\/title>/i);
-  assert.match(html, /Desktop-E-Mail-Programm/);
-  assert.match(html, /Priorisierter Posteingang/);
-  assert.match(html, /Neue Mail/);
-  assert.match(html, /Kalender und Kontakte integriert/);
-  assert.match(html, /Das E-Mail-Programm kaufen/);
-  assert.match(html, /Mail-Plan bestellen/);
-  assert.match(html, /Familie Mail/);
-  assert.match(html, /Familienpostfach/);
-  assert.match(html, /Team Mail für 12 EUR starten/);
-  assert.match(html, /Testmodus/);
+  assert.match(html, /Anmeldung erforderlich/);
+  assert.match(html, /Ihr E-Mail-Programm ist geschützt/);
+  assert.match(html, /Mail-App öffnen/);
+  assert.match(html, /Keine offene Demo/);
+  assert.match(html, /Lokale Sitzung/);
+  assert.doesNotMatch(html, /Priorisierter Posteingang|Mail-Plan bestellen/);
   assert.doesNotMatch(html, /Desktop-Produktivitätssuite|Tresormodell|Passkeys/i);
   assert.doesNotMatch(html, /Proton|Outlook|Microsoft|Google/i);
 });
 
-test("keeps checkout and responsive email positioning wired", async () => {
-  const [page, layout, packageJson, css] = await Promise.all([
+test("keeps checkout, desktop app, and email positioning wired", async () => {
+  const [page, layout, packageJson, css, desktopMain] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../desktop/main.cjs", import.meta.url), "utf8"),
   ]);
 
+  assert.match(page, /lumenary-mail-user/);
+  assert.match(page, /submitLogin/);
+  assert.match(page, /Mail-App öffnen/);
   assert.match(page, /const features = \[/);
   assert.match(page, /Posteingang/);
   assert.match(page, /Kontakte/);
@@ -62,8 +62,14 @@ test("keeps checkout and responsive email positioning wired", async () => {
   assert.match(page, /Gewählter Mail-Plan/);
   assert.match(page, /submitCheckout/);
   assert.match(page, /Bitte geben Sie eine gültige E-Mail-Adresse ein/);
+  assert.match(page, /Zahlungs-Testmodus/);
   assert.match(layout, /Desktop-E-Mail-Programm/);
   assert.match(layout, /E-Mail, Kalender und Kontakte ruhig organisiert/);
+  assert.match(packageJson, /"desktop": "electron desktop\/main\.cjs"/);
+  assert.match(packageJson, /"electron":/);
+  assert.match(desktopMain, /BrowserWindow/);
+  assert.match(desktopMain, /lumenary-desk\.nicolax67\.chatgpt\.site/);
+  assert.match(css, /\.authCard/);
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);
   assert.match(css, /\.comparison/);

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const inbox = [
   ["Angebot für Website-Relaunch", "Mara Chen", "09:18", "Antwort"],
@@ -66,6 +66,13 @@ export default function Home() {
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("idle");
   const [form, setForm] = useState({ name: "", email: "", company: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loginEmail, setLoginEmail] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  useEffect(() => {
+    setUserEmail(window.localStorage.getItem("lumenary-mail-user") ?? "");
+  }, []);
 
   const selectedPlan = useMemo(
     () => plans.find((plan) => plan.id === selectedPlanId) ?? plans[0],
@@ -77,6 +84,28 @@ export default function Home() {
     setCheckoutState("checkout");
     setErrors({});
     window.location.hash = "checkout";
+  }
+
+  function submitLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const email = loginEmail.trim().toLowerCase();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setLoginError("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+      return;
+    }
+
+    window.localStorage.setItem("lumenary-mail-user", email);
+    setUserEmail(email);
+    setForm((current) => ({ ...current, email }));
+    setLoginError("");
+  }
+
+  function signOut() {
+    window.localStorage.removeItem("lumenary-mail-user");
+    setUserEmail("");
+    setLoginEmail("");
+    setCheckoutState("idle");
   }
 
   function cancelCheckout() {
@@ -108,6 +137,57 @@ export default function Home() {
     window.location.hash = "checkout";
   }
 
+  if (!userEmail) {
+    return (
+      <main className="authMain">
+        <section className="authShell" aria-label="Anmeldung">
+          <a className="brand" href="#top" aria-label="Lumenary Desk Startseite">
+            <span className="brandMark">L</span>
+            <span>Lumenary Desk</span>
+          </a>
+          <div className="authGrid">
+            <div>
+              <p className="eyebrow">Anmeldung erforderlich</p>
+              <h1>Ihr E-Mail-Programm ist geschützt.</h1>
+              <p className="lede">
+                Melden Sie sich mit Ihrer E-Mail-Adresse an, um den Posteingang,
+                Kalender, Kontakte, Regeln und die Bestellung von Lumenary Desk
+                zu öffnen.
+              </p>
+              <div className="proof">
+                <span>Lokale Sitzung</span>
+                <span>Keine offene Demo</span>
+                <span>Desktop-App bereit</span>
+              </div>
+            </div>
+
+            <form className="authCard" onSubmit={submitLogin} noValidate>
+              <h2>Anmelden</h2>
+              <label>
+                E-Mail-Adresse
+                <input
+                  value={loginEmail}
+                  onChange={(event) => setLoginEmail(event.target.value)}
+                  aria-invalid={Boolean(loginError)}
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder="name@example.com"
+                />
+                {loginError && <small>{loginError}</small>}
+              </label>
+              <button type="submit">Mail-App öffnen</button>
+              <p>
+                MVP-Hinweis: Diese Anmeldung erstellt eine lokale Sitzung auf
+                diesem Gerät. Für echte Konten braucht Lumenary Desk später ein
+                Authentifizierungs-Backend mit Bestätigungsmail.
+              </p>
+            </form>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main>
       <section className="hero" id="top">
@@ -122,6 +202,9 @@ export default function Home() {
             <a href="#pricing">Preise</a>
           </div>
           <a className="navCta" href="#pricing">Mail-Plan kaufen</a>
+          <button className="accountBtn" type="button" onClick={signOut}>
+            {userEmail}
+          </button>
         </nav>
 
         <div className="heroGrid">
@@ -254,10 +337,10 @@ export default function Home() {
       <section className="checkout" id="checkout" aria-live="polite">
         <div className="checkoutShell">
           <div>
-            <p className="eyebrow">Checkout-Demo</p>
+            <p className="eyebrow">Checkout</p>
             <h2>Mail-Plan bestellen.</h2>
             <p className="checkoutNote">
-              Testmodus: Diese Demo erfasst keine Zahlungsdaten und löst keine
+              Zahlungs-Testmodus: Diese Bestellung erfasst keine Zahlungsdaten und löst keine
               echte Zahlung aus. Für Live-Zahlungen muss ein Zahlungsanbieter
               mit geheimen Server-Zugangsdaten konfiguriert werden.
             </p>
@@ -268,7 +351,7 @@ export default function Home() {
               <div className="statusBox success">
                 <h3>Mail-Plan vorgemerkt</h3>
                 <p>
-                  Der Plan {selectedPlan.name} wurde im Testmodus erfolgreich
+                  Der Plan {selectedPlan.name} wurde im Zahlungs-Testmodus erfolgreich
                   für {selectedPlan.price} EUR pro Monat ausgewählt. Im Live-Betrieb würde hier die Zahlungsbestätigung
                   des Anbieters verarbeitet.
                 </p>
@@ -289,7 +372,7 @@ export default function Home() {
                 <div className="summary">
                   <span>Gewählter Mail-Plan</span>
                   <strong>{selectedPlan.name}</strong>
-                  <p>{selectedPlan.price} EUR pro Monat, Testmodus aktiv</p>
+                  <p>{selectedPlan.price} EUR pro Monat, Zahlungs-Testmodus aktiv</p>
                   <p>{selectedPlan.detail}</p>
                 </div>
 
@@ -328,7 +411,7 @@ export default function Home() {
                 </label>
 
                 <div className="checkoutActions">
-                  <button type="submit">Testbestellung bestätigen</button>
+                  <button type="submit">Bestellung bestätigen</button>
                   <button type="button" onClick={cancelCheckout}>Abbrechen</button>
                 </div>
               </form>

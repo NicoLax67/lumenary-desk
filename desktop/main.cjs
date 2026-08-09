@@ -1,0 +1,47 @@
+const { app, BrowserWindow, shell } = require("electron");
+
+const APP_URL = "https://lumenary-desk.nicolax67.chatgpt.site/";
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1280,
+    height: 860,
+    minWidth: 980,
+    minHeight: 680,
+    title: "Lumenary Desk Mail",
+    backgroundColor: "#f6f1e8",
+    autoHideMenuBar: true,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+
+  win.loadURL(APP_URL);
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith(APP_URL)) {
+      return { action: "allow" };
+    }
+
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
+}
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});

@@ -11,7 +11,9 @@
     "start": "set WRANGLER_LOG_PATH=.wrangler/wrangler.log&& vinext start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "desktop": "electron desktop/main.cjs",
+    "desktop:install": "powershell.exe -ExecutionPolicy Bypass -File desktop/install-windows.ps1"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",
@@ -29,6 +31,7 @@
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.26",
     "drizzle-kit": "0.31.10",
+    "electron": "^43.3.0",
     "eslint": "9.39.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
