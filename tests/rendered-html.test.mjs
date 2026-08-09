@@ -100,6 +100,11 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopHtml, /Aktualisieren/);
   assert.match(desktopHtml, /window\.lumenaryUpdater\.update/);
   assert.match(desktopHtml, /Aktualisierung abgeschlossen/);
+  assert.match(desktopHtml, /E-Mail-Assistent/);
+  assert.match(desktopHtml, /Kleiner Brief/);
+  assert.match(desktopHtml, /id="assistantText"/);
+  assert.match(desktopHtml, /Brief vom Assistenten/);
+  assert.match(desktopHtml, /Assistent hat die App erklärt/);
   assert.match(installer, /electron\.exe/);
   assert.match(installer, /start button\.lnk/);
   assert.doesNotMatch(installer, /npm\.cmd|run desktop/);
