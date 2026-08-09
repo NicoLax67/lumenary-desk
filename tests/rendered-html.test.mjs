@@ -41,13 +41,14 @@ test("server-renders the required email login gate", async () => {
 });
 
 test("keeps checkout, desktop app, and email positioning wired", async () => {
-  const [page, layout, packageJson, css, desktopMain, desktopHtml, installer, installButton, startCmd, startPs1, protonReadme] = await Promise.all([
+  const [page, layout, packageJson, css, desktopMain, desktopHtml, desktopPreload, installer, installButton, startCmd, startPs1, protonReadme] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../desktop/main.cjs", import.meta.url), "utf8"),
     readFile(new URL("../desktop/app.html", import.meta.url), "utf8"),
+    readFile(new URL("../desktop/preload.cjs", import.meta.url), "utf8"),
     readFile(new URL("../desktop/install-windows.ps1", import.meta.url), "utf8"),
     readFile(new URL("../install button.ps1", import.meta.url), "utf8"),
     readFile(new URL("../start button.cmd", import.meta.url), "utf8"),
@@ -75,7 +76,13 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(packageJson, /"electron":/);
   assert.match(desktopMain, /BrowserWindow/);
   assert.match(desktopMain, /loadFile\(APP_FILE\)/);
+  assert.match(desktopMain, /ipcMain\.handle\("lumenary:update-app"/);
+  assert.match(desktopMain, /git", \["pull", "--ff-only", "github", "main"\]/);
+  assert.match(desktopMain, /npm\.cmd", "install"/);
   assert.doesNotMatch(desktopMain, /lumenary-desk\.nicolax67\.chatgpt\.site|loadURL/);
+  assert.match(desktopPreload, /contextBridge/);
+  assert.match(desktopPreload, /lumenaryUpdater/);
+  assert.match(desktopPreload, /lumenary:update-app/);
   assert.match(desktopHtml, /Es wird keine ChatGPT-Anmeldung benötigt/);
   assert.match(desktopHtml, /lumenary-desktop-user/);
   assert.match(desktopHtml, /data-folder="Posteingang"/);
@@ -89,6 +96,10 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopHtml, /1143/);
   assert.match(desktopHtml, /1025/);
   assert.match(desktopHtml, /lumenary-mail-account/);
+  assert.match(desktopHtml, /id="updateApp"/);
+  assert.match(desktopHtml, /Aktualisieren/);
+  assert.match(desktopHtml, /window\.lumenaryUpdater\.update/);
+  assert.match(desktopHtml, /Aktualisierung abgeschlossen/);
   assert.match(installer, /electron\.exe/);
   assert.match(installer, /start button\.lnk/);
   assert.doesNotMatch(installer, /npm\.cmd|run desktop/);

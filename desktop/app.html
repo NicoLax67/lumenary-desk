@@ -315,6 +315,7 @@
         <button class="folder" type="button" data-folder="Rechnungen"><span>Rechnungen</span><strong>7</strong></button>
         <button class="folder" type="button" data-folder="Archiv"><span>Archiv</span><strong>2,4 TB</strong></button>
         <button class="folder" type="button" id="accountSettings"><span>Konto verbinden</span><strong>IMAP</strong></button>
+        <button class="folder" type="button" id="updateApp"><span>Aktualisieren</span><strong>GitHub</strong></button>
         <button id="logout" style="margin-top: 28px; width: 100%">Abmelden</button>
       </aside>
 
@@ -425,6 +426,7 @@
       const imapPort = document.getElementById("imapPort");
       const smtpHost = document.getElementById("smtpHost");
       const smtpPort = document.getElementById("smtpPort");
+      const updateApp = document.getElementById("updateApp");
       const key = "lumenary-desktop-user";
       let selectedSubject = "";
 
@@ -541,6 +543,28 @@
         };
         localStorage.setItem("lumenary-mail-account", JSON.stringify(account));
         notify(provider.value === "proton" ? "Proton-Bridge-Konto gespeichert" : "IMAP/SMTP-Konto gespeichert");
+      });
+
+      updateApp.addEventListener("click", async () => {
+        if (!window.lumenaryUpdater) {
+          notify("Aktualisierer ist in dieser Umgebung nicht verfügbar");
+          return;
+        }
+
+        updateApp.disabled = true;
+        updateApp.querySelector("strong").textContent = "...";
+        notify("Aktualisierung läuft");
+
+        const result = await window.lumenaryUpdater.update();
+        if (!result.ok) {
+          updateApp.disabled = false;
+          updateApp.querySelector("strong").textContent = "Fehler";
+          notify(result.message || "Aktualisierung fehlgeschlagen");
+          return;
+        }
+
+        notify("Aktualisierung abgeschlossen. App wird neu geladen.");
+        window.setTimeout(() => location.reload(), 900);
       });
     </script>
   </body>
