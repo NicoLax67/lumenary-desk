@@ -103,8 +103,9 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopPreload, /lumenaryMail/);
   assert.match(desktopHtml, /readerTitle\.textContent/);
   assert.match(desktopHtml, /Ordner " \+ folder\.dataset\.folder \+ " geöffnet/);
-  assert.match(desktopHtml, /Posteingang laden/);
-  assert.match(desktopHtml, /Verbindung testen/);
+  assert.match(desktopHtml, /Verbinden und Posteingang laden/);
+  assert.match(desktopHtml, /Erweiterte Einstellungen/);
+  assert.match(desktopHtml, /connectAndLoad/);
   assert.match(desktopHtml, /fetchInbox/);
   assert.match(desktopHtml, /sendReply/);
   assert.match(desktopHtml, /search\.addEventListener\("input"/);

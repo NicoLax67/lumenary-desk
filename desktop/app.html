@@ -279,11 +279,29 @@
       .serverGrid {
         display: grid;
         gap: 8px;
-        grid-template-columns: 1fr 80px;
+        grid-template-columns: 1fr;
       }
 
-      .serverGrid label:first-child {
-        grid-column: 1;
+      .advancedSettings {
+        border: 0;
+        display: none;
+        margin: 12px 0 0;
+        padding: 0;
+      }
+
+      .advancedSettings.open {
+        display: grid;
+        gap: 8px;
+      }
+
+      .accountActions {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .accountActions button {
+        width: 100%;
       }
 
       .assistantLetter {
@@ -410,47 +428,48 @@
         </div>
         <section class="settings" id="settings">
           <p class="eyebrow">Konto</p>
-          <h3>Mailkonto verbinden</h3>
+          <h3>Proton Mail verbinden</h3>
           <label>
-            Anbieter
+            Verbindung
             <select id="provider">
-              <option value="standard">Standard IMAP/SMTP</option>
               <option value="proton">Proton Mail via Bridge</option>
+              <option value="standard">Anderer Anbieter</option>
             </select>
           </label>
           <div class="serverGrid">
             <label>
-              Benutzername
-              <input id="mailUser" placeholder="Bridge-Benutzername oder E-Mail" />
+              Bridge-Benutzername
+              <input id="mailUser" placeholder="aus Proton Mail Bridge kopieren" />
             </label>
             <label>
-              Passwort
-              <input id="mailPass" type="password" placeholder="Bridge-Passwort" />
+              Bridge-Passwort
+              <input id="mailPass" type="password" placeholder="aus Proton Mail Bridge kopieren" />
             </label>
+          </div>
+          <fieldset class="advancedSettings" id="advancedSettings">
             <label>
               IMAP-Server
-              <input id="imapHost" value="imap.example.com" />
+              <input id="imapHost" value="127.0.0.1" />
             </label>
             <label>
-              Port
-              <input id="imapPort" value="993" />
+              IMAP-Port
+              <input id="imapPort" value="1143" />
             </label>
             <label>
               SMTP-Server
-              <input id="smtpHost" value="smtp.example.com" />
+              <input id="smtpHost" value="127.0.0.1" />
             </label>
             <label>
-              Port
-              <input id="smtpPort" value="465" />
+              SMTP-Port
+              <input id="smtpPort" value="1025" />
             </label>
-          </div>
+          </fieldset>
           <p class="muted" id="providerHint">
-            Für normale Anbieter tragen Sie IMAP- und SMTP-Daten ein.
+            Öffnen Sie Proton Mail Bridge und kopieren Sie Benutzername und Passwort hier hinein.
           </p>
-          <div class="readerActions">
-            <button type="button" id="saveAccount">Konto speichern</button>
-            <button type="button" id="testAccount" class="ghostButton">Verbindung testen</button>
-            <button type="button" id="loadInbox" class="ghostButton">Posteingang laden</button>
+          <div class="accountActions">
+            <button type="button" id="connectAndLoad">Verbinden und Posteingang laden</button>
+            <button type="button" id="toggleAdvanced" class="ghostButton">Erweiterte Einstellungen</button>
           </div>
         </section>
       </aside>
@@ -475,6 +494,7 @@
       const toast = document.getElementById("toast");
       const provider = document.getElementById("provider");
       const providerHint = document.getElementById("providerHint");
+      const advancedSettings = document.getElementById("advancedSettings");
       const mailUser = document.getElementById("mailUser");
       const mailPass = document.getElementById("mailPass");
       const imapHost = document.getElementById("imapHost");
@@ -538,8 +558,11 @@
       function restoreAccount() {
         try {
           const account = JSON.parse(localStorage.getItem(accountKey) || "null");
-          if (!account) return;
-          provider.value = account.provider || "standard";
+          if (!account) {
+            applyProviderDefaults();
+            return;
+          }
+          provider.value = account.provider || "proton";
           mailUser.value = account.user || "";
           imapHost.value = account.imapHost || imapHost.value;
           imapPort.value = account.imapPort || imapPort.value;
@@ -547,7 +570,25 @@
           smtpPort.value = account.smtpPort || smtpPort.value;
         } catch {
           localStorage.removeItem(accountKey);
+          applyProviderDefaults();
         }
+      }
+
+      function applyProviderDefaults() {
+        if (provider.value === "proton") {
+          imapHost.value = "127.0.0.1";
+          imapPort.value = "1143";
+          smtpHost.value = "127.0.0.1";
+          smtpPort.value = "1025";
+          providerHint.textContent = "Öffnen Sie Proton Mail Bridge und kopieren Sie Benutzername und Passwort hier hinein.";
+          return;
+        }
+
+        imapHost.value = "imap.example.com";
+        imapPort.value = "993";
+        smtpHost.value = "smtp.example.com";
+        smtpPort.value = "465";
+        providerHint.textContent = "Für andere Anbieter öffnen Sie Erweiterte Einstellungen und tragen IMAP/SMTP ein.";
       }
 
       function formatDate(value) {
@@ -605,6 +646,20 @@
         }
         renderMessages(result.messages || []);
         notify("Posteingang geladen");
+      }
+
+      async function connectAndLoad() {
+        if (!window.lumenaryMail) {
+          notify("Mail-Modul ist in dieser Umgebung nicht verfügbar");
+          return;
+        }
+        saveAccount();
+        const test = await window.lumenaryMail.testConnection(getAccount());
+        if (!test.ok) {
+          notify(test.message || "Verbindung fehlgeschlagen");
+          return;
+        }
+        await loadInbox();
       }
 
       restoreAccount();
@@ -697,38 +752,15 @@
       });
 
       provider.addEventListener("change", () => {
-        if (provider.value === "proton") {
-          imapHost.value = "127.0.0.1";
-          imapPort.value = "1143";
-          smtpHost.value = "127.0.0.1";
-          smtpPort.value = "1025";
-          providerHint.textContent = "Proton Mail wird über Proton Mail Bridge verbunden. Öffnen Sie Bridge, kopieren Sie dort Benutzername und Passwort und lassen Sie Bridge im Hintergrund laufen.";
-          notify("Proton-Bridge-Einstellungen übernommen");
-          return;
-        }
-
-        imapHost.value = "imap.example.com";
-        imapPort.value = "993";
-        smtpHost.value = "smtp.example.com";
-        smtpPort.value = "465";
-        providerHint.textContent = "Für normale Anbieter tragen Sie IMAP- und SMTP-Daten ein.";
+        applyProviderDefaults();
+        notify(provider.value === "proton" ? "Proton Mail ausgewählt" : "Anderer Anbieter ausgewählt");
       });
 
-      document.getElementById("saveAccount").addEventListener("click", () => {
-        saveAccount();
-        notify(provider.value === "proton" ? "Proton-Bridge-Konto gespeichert" : "IMAP/SMTP-Konto gespeichert");
-      });
+      document.getElementById("connectAndLoad").addEventListener("click", connectAndLoad);
 
-      document.getElementById("testAccount").addEventListener("click", async () => {
-        if (!window.lumenaryMail) {
-          notify("Mail-Modul ist in dieser Umgebung nicht verfügbar");
-          return;
-        }
-        const result = await window.lumenaryMail.testConnection(getAccount());
-        notify(result.message || (result.ok ? "Verbindung erfolgreich" : "Verbindung fehlgeschlagen"));
+      document.getElementById("toggleAdvanced").addEventListener("click", () => {
+        advancedSettings.classList.toggle("open");
       });
-
-      document.getElementById("loadInbox").addEventListener("click", loadInbox);
 
       updateApp.addEventListener("click", async () => {
         if (!window.lumenaryUpdater) {
