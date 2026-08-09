@@ -3,56 +3,58 @@
 import { FormEvent, useMemo, useState } from "react";
 
 const inbox = [
-  ["Startplan Hafen", "Mara Chen", "09:18", "Bereit"],
-  ["Vertragsprüfung", "Jon Bell", "10:05", "Recht"],
-  ["Notizen zum Design-Abgleich", "Ana Vale", "Gestern", "Team"],
-  ["Quartalsrechnung", "Northstar Labs", "Di", "Finanzen"],
+  ["Angebot für Website-Relaunch", "Mara Chen", "09:18", "Antwort"],
+  ["Kalendereinladung: Strategie", "Jon Bell", "10:05", "Termin"],
+  ["Rechnung August", "Northstar Labs", "Gestern", "Beleg"],
+  ["Neue Nachricht aus dem Familienpostfach", "Lea Sommer", "Di", "Familie"],
 ];
 
-const apps = [
-  ["Mail", "Ein gemeinsamer Posteingang mit ruhiger Priorisierung", "14 ungelesen"],
-  ["Tresor", "Passwörter, Passkeys, Karten und sichere Notizen", "Gesperrt"],
-  ["Kalender", "Tag, Woche, Buchungslinks und geteilte Räume", "5 heute"],
-  ["Dateien", "Verschlüsselte Ordner, Vorschauen und Transferlinks", "2,4 TB"],
-  ["Notizen", "Meetingnotizen, Aufgaben und Projekt-Notizbücher", "32 Dokumente"],
-  ["Fokus", "Timer, Blocker, Rituale und Tagesrückblick", "25 Min."],
+const features = [
+  ["Posteingang", "Mehrere Konten, Unterhaltungen, Anhänge und schnelle Antworten", "14 ungelesen"],
+  ["Kalender", "Termine, Einladungen, Verfügbarkeiten und Erinnerungen", "5 heute"],
+  ["Kontakte", "Adressbuch, Verteilerlisten und Kontaktverlauf", "842 Kontakte"],
+  ["Aufgaben", "Nachrichten in Aufgaben verwandeln und Fristen verfolgen", "7 offen"],
+  ["Regeln", "Filter, Labels, Weiterleitungen und automatische Ablage", "18 aktiv"],
+  ["Archiv", "Schnelle Suche, gespeicherte Anhänge und lokale Offline-Kopie", "2,4 TB"],
 ];
+
+const folders = ["Posteingang", "Gesendet", "Entwürfe", "Familie", "Rechnungen", "Archiv"];
 
 const plans = [
   {
     id: "solo",
-    name: "Solo",
+    name: "Solo Mail",
     price: 4,
-    description: "Für eine Person mit allen Kernmodulen",
-    detail: "1 Person, 250 GB Dateien, privater Tresor",
-    action: "Solo für 4 EUR starten",
+    description: "Für eine Person mit mehreren E-Mail-Konten",
+    detail: "1 Person, 5 Postfächer, Kalender, Kontakte und 250 GB Mailarchiv",
+    action: "Solo Mail für 4 EUR starten",
     audience: "Einzelperson",
   },
   {
     id: "family",
-    name: "Familie",
+    name: "Familie Mail",
     price: 8,
-    description: "Für Haushalte, die mehrere Personen gemeinsam verwalten",
-    detail: "Bis 6 Personen, Familienkalender, geteilte Ordner und Tresore",
-    action: "Familie für 8 EUR starten",
+    description: "Für Haushalte mit gemeinsam verwalteten Mailkonten",
+    detail: "Bis 6 Personen, Familienpostfach, geteilter Kalender und Rollen",
+    action: "Familie Mail für 8 EUR starten",
     audience: "Familie",
   },
   {
     id: "team",
-    name: "Team",
+    name: "Team Mail",
     price: 12,
-    description: "Für kleine Teams mit geteilten Arbeitsbereichen",
-    detail: "Bis 10 Mitglieder, Projekträume, Adminrollen",
-    action: "Team für 12 EUR starten",
+    description: "Für kleine Teams mit gemeinsamen Postfächern",
+    detail: "Bis 10 Mitglieder, Team-Inbox, Aliasse, Regeln und Aufgaben",
+    action: "Team Mail für 12 EUR starten",
     audience: "Team",
   },
   {
     id: "studio",
-    name: "Studio",
+    name: "Studio Mail",
     price: 29,
-    description: "Für regulierte Teams mit Admin-Kontrollen",
-    detail: "Erweiterte Freigaben, Audit-Export, bevorzugter Support",
-    action: "Studio für 29 EUR anfragen",
+    description: "Für Organisationen mit Freigaben und Kontrollbedarf",
+    detail: "Audit-Export, Archivrichtlinien, Adminrollen und bevorzugter Support",
+    action: "Studio Mail für 29 EUR anfragen",
     audience: "Organisation",
   },
 ];
@@ -115,44 +117,44 @@ export default function Home() {
             <span>Lumenary Desk</span>
           </a>
           <div className="navLinks">
-            <a href="#suite">Suite</a>
+            <a href="#suite">E-Mail</a>
             <a href="#security">Sicherheit</a>
             <a href="#pricing">Preise</a>
           </div>
-          <a className="navCta" href="#pricing">Jetzt kaufen</a>
+          <a className="navCta" href="#pricing">Mail-Plan kaufen</a>
         </nav>
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">Desktop-Produktivitätssuite</p>
+            <p className="eyebrow">Desktop-E-Mail-Programm</p>
             <h1>Lumenary Desk</h1>
             <p className="lede">
-              Mail, Tresor, Kalender, Dateien, Notizen und Fokuswerkzeuge in
-              einem ruhigen Desktop-Arbeitsbereich für private, organisierte
-              Arbeit.
+              Ein eigenständiger Mail-Client für Windows, Mac und Web: mehrere
+              Postfächer, Kalender, Kontakte, Aufgaben, Regeln und Offline-Suche
+              in einer ruhigen Oberfläche.
             </p>
             <div className="heroActions">
-              <a className="primaryBtn" href="#pricing">Plan auswählen</a>
-              <a className="secondaryBtn" href="#suite">App ansehen</a>
+              <a className="primaryBtn" href="#pricing">Mail-Plan auswählen</a>
+              <a className="secondaryBtn" href="#suite">E-Mail-App ansehen</a>
             </div>
             <div className="proof">
-              <span>Offline-first Desktop-Shell</span>
-              <span>Zero-Knowledge-Tresormodell</span>
-              <span>Kein Werbenetzwerk-Tracking</span>
+              <span>Mehrere E-Mail-Konten</span>
+              <span>Kalender und Kontakte integriert</span>
+              <span>Offline lesen und suchen</span>
             </div>
           </div>
 
-          <div className="desktop" aria-label="Vorschau der Desktop-App Lumenary Desk">
+          <div className="desktop" aria-label="Vorschau des E-Mail-Programms Lumenary Desk">
             <aside className="rail">
               <span className="railLogo">L</span>
-              {["Mail", "Tresor", "Kalender", "Dateien", "Notizen", "Fokus"].map((item) => (
+              {["Mail", "Kalender", "Kontakte", "Aufgaben", "Regeln", "Archiv"].map((item) => (
                 <button key={item} type="button" aria-label={item}>{item.slice(0, 2)}</button>
               ))}
             </aside>
             <section className="mailPanel">
               <div className="panelHeader">
-                <span>Priorisierte Mail</span>
-                <button type="button">Schreiben</button>
+                <span>Priorisierter Posteingang</span>
+                <button type="button">Neue Mail</button>
               </div>
               {inbox.map(([subject, sender, time, tag]) => (
                 <article className="message" key={subject}>
@@ -169,30 +171,25 @@ export default function Home() {
             </section>
             <section className="dayPanel">
               <div className="panelHeader">
-                <span>Heute</span>
-                <strong>9. Aug.</strong>
+                <span>Ordner</span>
+                <strong>6 aktiv</strong>
               </div>
-              <div className="calendarStrip">
-                {["09", "10", "11", "12", "13"].map((day, index) => (
-                  <span className={index === 2 ? "activeDay" : ""} key={day}>{day}</span>
+              <div className="fileRows">
+                {folders.map((folder) => (
+                  <span key={folder}>{folder}</span>
                 ))}
               </div>
               <div className="vaultCard">
-                <span className="lock">Sicherer Tresor</span>
-                <strong>186 Einträge geschützt</strong>
-                <p>Passkeys, Wiederherstellungscodes, geteilte Geheimnisse und Karten.</p>
-              </div>
-              <div className="fileRows">
-                <span>Projekträume</span>
-                <span>Produkt-Roadmap.pdf</span>
-                <span>Teamvereinbarungen.docx</span>
+                <span className="lock">Kalender heute</span>
+                <strong>14:00 Strategie-Call</strong>
+                <p>Einladung aus Mail erkannt, Raum und Agenda automatisch verknüpft.</p>
               </div>
             </section>
             <section className="focusPanel">
-              <div className="ring">25</div>
-              <strong>Fokusphase für konzentrierte Arbeit</strong>
-              <p>Benachrichtigungen in Mail, Kalender und Dateien sind pausiert.</p>
-              <button type="button">Fokus starten</button>
+              <div className="ring">42</div>
+              <strong>Minuten seit letzter Antwort</strong>
+              <p>Antwortentwürfe, Regeln und Aufgaben helfen, den Posteingang leer zu halten.</p>
+              <button type="button">Posteingang aufräumen</button>
             </section>
           </div>
         </div>
@@ -200,11 +197,11 @@ export default function Home() {
 
       <section className="suite" id="suite">
         <div className="sectionIntro">
-          <p className="eyebrow">Vollständige erste Version</p>
-          <h2>Ein Arbeitsbereich, sechs einsatzbereite Module.</h2>
+          <p className="eyebrow">E-Mail-Funktionen</p>
+          <h2>Alles, was ein modernes Mail-Programm braucht.</h2>
         </div>
         <div className="appGrid">
-          {apps.map(([name, text, meta]) => (
+          {features.map(([name, text, meta]) => (
             <article className="appCard" key={name}>
               <span>{meta}</span>
               <h3>{name}</h3>
@@ -216,21 +213,21 @@ export default function Home() {
 
       <section className="security" id="security">
         <div>
-          <p className="eyebrow">Klare Vertrauensgrenze</p>
-          <h2>Privat in der Architektur, eigenständig im Design.</h2>
+          <p className="eyebrow">Eigenständig und vertraulich</p>
+          <h2>Ein Mail-Client mit klarer Privatsphäre.</h2>
         </div>
         <p>
-          Lumenary Desk nutzt einen eigenen Namen, eine eigene visuelle Sprache,
-          ein eigenes Inhaltsmodell und eigene Interaktionsmuster. Das MVP
-          vermeidet Fremdmarken und konzentriert sich auf verschlüsselte lokale
-          Daten, bewusstes Teilen, Gerätefreigaben und einfache Exportkontrollen.
+          Lumenary Desk ist keine Kopie eines bestehenden Mailprogramms. Name,
+          Oberfläche und Abläufe sind eigenständig. Das MVP konzentriert sich
+          auf mehrere Postfächer, lokale Suche, verschlüsselte Gerätespeicherung,
+          klare Freigaben und nachvollziehbare Regeln.
         </p>
       </section>
 
       <section className="pricing" id="pricing">
         <div className="sectionIntro">
-          <p className="eyebrow">Pläne</p>
-          <h2>Die Desktop-Suite kaufen.</h2>
+          <p className="eyebrow">Mail-Pläne</p>
+          <h2>Das E-Mail-Programm kaufen.</h2>
         </div>
         <div className="planGrid">
           {plans.map((plan) => (
@@ -247,10 +244,10 @@ export default function Home() {
           ))}
         </div>
         <div className="comparison" aria-label="Planvergleich">
-          <span>Solo: privat und günstig</span>
-          <span>Familie: gemeinsame Verwaltung für mehrere Personen</span>
-          <span>Team: Arbeitsbereiche und Rollen</span>
-          <span>Studio: Kontrolle für regulierte Organisationen</span>
+          <span>Solo: persönlicher Mail-Client</span>
+          <span>Familie: mehrere Personen gemeinsam verwalten</span>
+          <span>Team: gemeinsame Postfächer und Aufgaben</span>
+          <span>Studio: Adminrollen, Archiv und Kontrolle</span>
         </div>
       </section>
 
@@ -258,7 +255,7 @@ export default function Home() {
         <div className="checkoutShell">
           <div>
             <p className="eyebrow">Checkout-Demo</p>
-            <h2>Bestellung abschließen.</h2>
+            <h2>Mail-Plan bestellen.</h2>
             <p className="checkoutNote">
               Testmodus: Diese Demo erfasst keine Zahlungsdaten und löst keine
               echte Zahlung aus. Für Live-Zahlungen muss ein Zahlungsanbieter
@@ -269,7 +266,7 @@ export default function Home() {
           <div className="checkoutPanel">
             {checkoutState === "success" ? (
               <div className="statusBox success">
-                <h3>Bestellung vorgemerkt</h3>
+                <h3>Mail-Plan vorgemerkt</h3>
                 <p>
                   Der Plan {selectedPlan.name} wurde im Testmodus erfolgreich
                   für {selectedPlan.price} EUR pro Monat ausgewählt. Im Live-Betrieb würde hier die Zahlungsbestätigung
@@ -290,7 +287,7 @@ export default function Home() {
             ) : (
               <form onSubmit={submitCheckout} noValidate>
                 <div className="summary">
-                  <span>Gewählter Plan</span>
+                  <span>Gewählter Mail-Plan</span>
                   <strong>{selectedPlan.name}</strong>
                   <p>{selectedPlan.price} EUR pro Monat, Testmodus aktiv</p>
                   <p>{selectedPlan.detail}</p>

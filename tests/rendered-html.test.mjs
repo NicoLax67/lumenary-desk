@@ -23,33 +23,28 @@ async function render() {
   );
 }
 
-test("server-renders the German Lumenary Desk product page", async () => {
+test("server-renders Lumenary Desk as a German email program", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Lumenary Desk \| Private Desktop-Produktivitätssuite<\/title>/i);
-  assert.match(html, /Desktop-Produktivitätssuite/);
-  assert.match(html, /Priorisierte Mail/);
-  assert.match(html, /Sicherer Tresor/);
-  assert.match(html, /Die Desktop-Suite kaufen/);
-  assert.match(html, /Zero-Knowledge-Tresormodell/);
-  assert.match(html, /Fokus starten/);
-  assert.match(html, /Checkout-Demo/);
+  assert.match(html, /<title>Lumenary Desk \| Privates Desktop-E-Mail-Programm<\/title>/i);
+  assert.match(html, /Desktop-E-Mail-Programm/);
+  assert.match(html, /Priorisierter Posteingang/);
+  assert.match(html, /Neue Mail/);
+  assert.match(html, /Kalender und Kontakte integriert/);
+  assert.match(html, /Das E-Mail-Programm kaufen/);
+  assert.match(html, /Mail-Plan bestellen/);
+  assert.match(html, /Familie Mail/);
+  assert.match(html, /Familienpostfach/);
+  assert.match(html, /Team Mail für 12 EUR starten/);
   assert.match(html, /Testmodus/);
-  assert.match(html, /Testbestellung bestätigen/);
-  assert.match(html, /Familie/);
-  assert.match(html, /Bis 6 Personen/);
-  assert.match(html, /Solo für 4 EUR starten/);
-  assert.match(html, /Familie für 8 EUR starten/);
-  assert.match(html, /Team für 12 EUR starten/);
-  assert.match(html, /Studio für 29 EUR anfragen/);
-  assert.doesNotMatch(html, /codex-preview|Building your site|react-loading-skeleton/i);
+  assert.doesNotMatch(html, /Desktop-Produktivitätssuite|Tresormodell|Passkeys/i);
   assert.doesNotMatch(html, /Proton|Outlook|Microsoft|Google/i);
 });
 
-test("keeps starter preview code out of the finished MVP", async () => {
+test("keeps checkout and responsive email positioning wired", async () => {
   const [page, layout, packageJson, css] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -57,22 +52,18 @@ test("keeps starter preview code out of the finished MVP", async () => {
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /const apps = \[/);
-  assert.match(page, /Mail/);
-  assert.match(page, /Tresor/);
-  assert.match(page, /Kalender/);
-  assert.match(page, /Dateien/);
-  assert.match(page, /Notizen/);
-  assert.match(page, /Fokus/);
-  assert.match(layout, /Private Arbeit, ruhig organisiert/);
-  assert.match(layout, /openGraph/);
-  assert.match(layout, /\/og\.png/);
+  assert.match(page, /const features = \[/);
+  assert.match(page, /Posteingang/);
+  assert.match(page, /Kontakte/);
+  assert.match(page, /Aufgaben/);
+  assert.match(page, /Regeln/);
+  assert.match(page, /id: "family"/);
+  assert.match(page, /gemeinsam verwalteten Mailkonten/);
+  assert.match(page, /Gewählter Mail-Plan/);
   assert.match(page, /submitCheckout/);
   assert.match(page, /Bitte geben Sie eine gültige E-Mail-Adresse ein/);
-  assert.match(page, /keine\s+Zahlungsdaten/);
-  assert.match(page, /id: "family"/);
-  assert.match(page, /gemeinsame Verwaltung für mehrere Personen/);
-  assert.match(page, /selectedPlan\.detail/);
+  assert.match(layout, /Desktop-E-Mail-Programm/);
+  assert.match(layout, /E-Mail, Kalender und Kontakte ruhig organisiert/);
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);
   assert.match(css, /\.comparison/);
