@@ -22,15 +22,15 @@ if (-not (Test-Path -LiteralPath $hostingPath -PathType Leaf)) {
 
 $stageRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("lumenary-site-" + [System.Guid]::NewGuid().ToString())
 $stageDist = Join-Path $stageRoot "dist"
-$stageOpenAI = Join-Path $stageDist ".openai"
+$stageHostingMeta = Join-Path $stageDist ".openai"
 
-New-Item -ItemType Directory -Path $stageOpenAI -Force | Out-Null
+New-Item -ItemType Directory -Path $stageHostingMeta -Force | Out-Null
 Copy-Item -Path (Join-Path $distPath "*") -Destination $stageDist -Recurse -Force
-Copy-Item -LiteralPath $hostingPath -Destination (Join-Path $stageOpenAI "hosting.json") -Force
+Copy-Item -LiteralPath $hostingPath -Destination (Join-Path $stageHostingMeta "hosting.json") -Force
 
 $drizzlePath = Join-Path $projectPath "drizzle"
 if (Test-Path -LiteralPath $drizzlePath -PathType Container) {
-  $stageDrizzle = Join-Path $stageOpenAI "drizzle"
+  $stageDrizzle = Join-Path $stageHostingMeta "drizzle"
   New-Item -ItemType Directory -Path $stageDrizzle -Force | Out-Null
   Copy-Item -Path (Join-Path $drizzlePath "*") -Destination $stageDrizzle -Recurse -Force
 }

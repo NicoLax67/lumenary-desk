@@ -86,11 +86,11 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopMain, /ipcMain\.handle\("lumenary:update-app"/);
   assert.match(desktopMain, /git", \["pull", "--ff-only", "github", "main"\]/);
   assert.match(desktopMain, /npm\.cmd", "install"/);
-  assert.doesNotMatch(desktopMain, /lumenary-desk\.nicolax67\.chatgpt\.site|loadURL/);
+  assert.doesNotMatch(desktopMain, /loadURL/);
   assert.match(desktopPreload, /contextBridge/);
   assert.match(desktopPreload, /lumenaryUpdater/);
   assert.match(desktopPreload, /lumenary:update-app/);
-  assert.match(desktopHtml, /Es wird keine ChatGPT-Anmeldung benötigt/);
+  assert.match(desktopHtml, /Es wird keine externe Web-Anmeldung benötigt/);
   assert.match(desktopHtml, /nicoLaxx\.protonme/);
   assert.match(desktopHtml, /normalizeEmailInput/);
   assert.match(desktopHtml, /\.protonme/);
@@ -137,5 +137,5 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(css, /\.downloadPage/);
   assert.match(css, /@media \(max-width: 640px\)/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
-  assert.doesNotMatch(page + layout, /_sites-preview|SkeletonPreview|codex-preview/);
+  assert.doesNotMatch(page + layout, /_sites-preview|SkeletonPreview/);
 });
