@@ -1,6 +1,7 @@
+const path = require("node:path");
 const { app, BrowserWindow, shell } = require("electron");
 
-const APP_URL = "https://lumenary-desk.nicolax67.chatgpt.site/";
+const APP_FILE = path.join(__dirname, "app.html");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -18,15 +19,18 @@ function createWindow() {
     },
   });
 
-  win.loadURL(APP_URL);
+  win.loadFile(APP_FILE);
 
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith(APP_URL)) {
-      return { action: "allow" };
-    }
-
     shell.openExternal(url);
     return { action: "deny" };
+  });
+
+  win.webContents.on("will-navigate", (event, url) => {
+    if (!url.startsWith("file://")) {
+      event.preventDefault();
+      shell.openExternal(url);
+    }
   });
 }
 

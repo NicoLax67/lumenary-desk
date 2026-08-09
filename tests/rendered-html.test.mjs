@@ -41,12 +41,14 @@ test("server-renders the required email login gate", async () => {
 });
 
 test("keeps checkout, desktop app, and email positioning wired", async () => {
-  const [page, layout, packageJson, css, desktopMain] = await Promise.all([
+  const [page, layout, packageJson, css, desktopMain, desktopHtml, installer] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../desktop/main.cjs", import.meta.url), "utf8"),
+    readFile(new URL("../desktop/app.html", import.meta.url), "utf8"),
+    readFile(new URL("../desktop/install-windows.ps1", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /lumenary-mail-user/);
@@ -68,7 +70,12 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(packageJson, /"desktop": "electron desktop\/main\.cjs"/);
   assert.match(packageJson, /"electron":/);
   assert.match(desktopMain, /BrowserWindow/);
-  assert.match(desktopMain, /lumenary-desk\.nicolax67\.chatgpt\.site/);
+  assert.match(desktopMain, /loadFile\(APP_FILE\)/);
+  assert.doesNotMatch(desktopMain, /lumenary-desk\.nicolax67\.chatgpt\.site|loadURL/);
+  assert.match(desktopHtml, /Es wird keine ChatGPT-Anmeldung benötigt/);
+  assert.match(desktopHtml, /lumenary-desktop-user/);
+  assert.match(installer, /electron\.exe/);
+  assert.doesNotMatch(installer, /npm\.cmd|run desktop/);
   assert.match(css, /\.authCard/);
   assert.match(css, /\.desktop/);
   assert.match(css, /\.checkoutPanel/);

@@ -1,7 +1,8 @@
 $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
-$npm = (Get-Command npm.cmd).Source
+$electron = Join-Path $projectRoot "node_modules\electron\dist\electron.exe"
+$mainScript = Join-Path $projectRoot "desktop\main.cjs"
 $startMenu = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"
 $desktop = [Environment]::GetFolderPath("Desktop")
 $shortcutTargets = @(
@@ -11,13 +12,17 @@ $shortcutTargets = @(
 
 $shell = New-Object -ComObject WScript.Shell
 
+if (-not (Test-Path -LiteralPath $electron -PathType Leaf)) {
+  throw "electron.exe wurde nicht gefunden. Bitte zuerst npm install ausführen."
+}
+
 foreach ($shortcutPath in $shortcutTargets) {
   $shortcut = $shell.CreateShortcut($shortcutPath)
-  $shortcut.TargetPath = $npm
-  $shortcut.Arguments = "run desktop"
+  $shortcut.TargetPath = $electron
+  $shortcut.Arguments = "`"$mainScript`""
   $shortcut.WorkingDirectory = $projectRoot
   $shortcut.Description = "Lumenary Desk Mail Desktop-App"
-  $shortcut.IconLocation = "$env:SystemRoot\System32\shell32.dll,220"
+  $shortcut.IconLocation = $electron
   $shortcut.Save()
 }
 
