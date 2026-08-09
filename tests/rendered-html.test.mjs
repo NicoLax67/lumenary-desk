@@ -41,7 +41,7 @@ test("server-renders the required email login gate", async () => {
 });
 
 test("keeps checkout, desktop app, and email positioning wired", async () => {
-  const [page, layout, packageJson, css, desktopMain, desktopHtml, installer, installButton, protonReadme] = await Promise.all([
+  const [page, layout, packageJson, css, desktopMain, desktopHtml, installer, installButton, startCmd, startPs1, protonReadme] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
@@ -50,6 +50,8 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
     readFile(new URL("../desktop/app.html", import.meta.url), "utf8"),
     readFile(new URL("../desktop/install-windows.ps1", import.meta.url), "utf8"),
     readFile(new URL("../install button.ps1", import.meta.url), "utf8"),
+    readFile(new URL("../start button.cmd", import.meta.url), "utf8"),
+    readFile(new URL("../start button.ps1", import.meta.url), "utf8"),
     readFile(new URL("../README.proton-mail.md", import.meta.url), "utf8"),
   ]);
 
@@ -88,8 +90,13 @@ test("keeps checkout, desktop app, and email positioning wired", async () => {
   assert.match(desktopHtml, /1025/);
   assert.match(desktopHtml, /lumenary-mail-account/);
   assert.match(installer, /electron\.exe/);
+  assert.match(installer, /start button\.lnk/);
   assert.doesNotMatch(installer, /npm\.cmd|run desktop/);
   assert.match(installButton, /desktop\\install-windows\.ps1/);
+  assert.match(startCmd, /electron\\dist\\electron\.exe/);
+  assert.match(startCmd, /desktop\\main\.cjs/);
+  assert.match(startPs1, /Start-Process/);
+  assert.match(startPs1, /WindowStyle Hidden/);
   assert.match(protonReadme, /Proton Mail Bridge/);
   assert.match(protonReadme, /127\.0\.0\.1/);
   assert.match(css, /\.authCard/);

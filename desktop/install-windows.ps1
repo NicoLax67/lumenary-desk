@@ -7,7 +7,9 @@ $startMenu = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"
 $desktop = [Environment]::GetFolderPath("Desktop")
 $shortcutTargets = @(
   (Join-Path $startMenu "Lumenary Desk Mail.lnk"),
-  (Join-Path $desktop "Lumenary Desk Mail.lnk")
+  (Join-Path $desktop "Lumenary Desk Mail.lnk"),
+  (Join-Path $startMenu "start button.lnk"),
+  (Join-Path $desktop "start button.lnk")
 )
 
 $shell = New-Object -ComObject WScript.Shell
